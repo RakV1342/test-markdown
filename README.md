@@ -48,4 +48,4 @@ nohup python exporter.py --target-nsip=10.0.0.1:80 --target-nsip=10.0.0.2:80 --t
 ```
 This directs the exporter container to scrape the 10.0.0.1, 10.0.0.2, and 172.17.0.2, IPs on port 80, and the expose the stats it collects on port 8888. 
 The user can then access the exported metrics directly thorugh port 8888 on the machine where the exporter is running, or Prometheus and Grafana can be setup to view the exported metrics though their GUI.
-<details>
+</details>
