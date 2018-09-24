@@ -40,8 +40,11 @@ where the flags are:
 
 flag             |    Description
 -----------------|--------------------
---target-nsip    |Used to specify the &lt;IP:port&gt; of the Netscalers to be monitored
---port	        |Used to specify which port to bind the exporter to. Agents like Prometheus will need to scrape this port of the container to access stats being exported
+--target-nsip    |Provide the &lt;IP:port&gt; of the Netscalers to be monitored
+--port	        |Specify on which port the stats collected by the exporter should be exposed. Agents like Prometheus will need to scrape this port of the container to access stats being exported
+--username       |Provide the username of the NetScaler to be monitored. Default: 'nsroot'
+--password       |Provide the password of the NetScaler to be monitored. Default: 'nsroot'
+--secure         |Option 'yes' can be provided to run stat collection from Netscalers over TLS. Default: 'no'.
 -h               |Provides helper docs related to the exporter
 
 The exporter can be setup as given in the diagram using;
