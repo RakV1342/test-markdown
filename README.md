@@ -21,7 +21,7 @@ The Prometheus container then sends the stats acquired to Grafana which can plot
 
 Usage:
 ---
-The exporter can be run as a standalone python script, built into a container or run as a pod in Kubernetes.
+The exporter can be run as a standalone python script, built into a container or run as a pod in Kubernetes. The corresponding drop-downs explain how to deploy it in each of the manners.
 
 <details>
 <summary>Usage as a Python Script</summary>
