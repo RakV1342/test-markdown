@@ -50,9 +50,12 @@ This directs the exporter container to scrape the 10.0.0.1, 10.0.0.2, and 172.17
 The user can then access the exported metrics directly thorugh port 8888 on the machine where the exporter is running, or Prometheus and Grafana can be setup to view the exported metrics though their GUI.
 </details>
 
+
+
 <details>
 <summary>Usage as a Container</summary>
 <br>
+
 In order to use the exporter as a container, it needs to be built into a container. This can be done as follows; 
 ```
 docker build -f Dockerfile -t ns-exporter:v1 ./
@@ -67,5 +70,4 @@ docker run -dt -p 8888:8888 --name netscaler-exporter ns-exporter:v1 --target-ns
 ```
 This directs the exporter container to scrape the 10.0.0.1, 10.0.0.2, and 172.17.0.2, IPs on port 80, and the expose the stats it collects on port 8888. 
 The user can then access the exported metrics directly thorugh port 8888 on the machine where the exporter is running, or Prometheus and Grafana can be setup to view the exported metrics though their GUI.
-
 </details>
