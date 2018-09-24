@@ -38,7 +38,7 @@ nohup python exporter.py [flags] &
 ```
 where the flags are:
 
-flag             |    Description
+flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;             |    Description
 -----------------|--------------------
 --target-nsip    |Provide the &lt;IP:port&gt; of the Netscalers to be monitored
 --port	        |Specify on which port the stats collected by the exporter should be exposed. Agents like Prometheus will need to scrape this port of the container to access stats being exported
