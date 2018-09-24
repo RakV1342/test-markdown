@@ -111,6 +111,7 @@ spec:
   selector:
     app: exp
 ```
+</details>
 
 Stats Exported by Default:
 ---
