@@ -27,9 +27,10 @@ The exporter can be run as a standalone python script, built into a container or
 <summary>Usage as a Python Script</summary>
 <br>
 
-To use the exporter as a python script, the ```prometheus_client``` package needs to be installed. This can be done using 
+To use the exporter as a python script, the ```prometheus_client``` and ```requests``` package needs to be installed. This can be done using 
 ```
 pip install prometheus_client
+pip install requests
 ```
 Now, the following command can be used to run the exporter as a python script;
 ```
@@ -232,7 +233,7 @@ To verify if the exporter is scraping and exporting stats from NetScaler instanc
 http://<hostIP>:<port>
 curl http://<hostIP>:<port>
 ```
-where ```hostIP``` is the IP of the host on which the python script or container is running, and ```port``` is the value of the ```--port``` flag which had been provided (```8888``` as per the example). All the stats for all the entities configured on the NetScaler and provided in ```metrics.json``` should appear along with their live values. An example response would be as follows;
+where ```hostIP``` is the IP of the host on which the python script or container is running, and ```port``` is the value of the ```--port``` flag which had been provided (```8080``` as per the example). All the stats for all the entities configured on the NetScaler and provided in ```metrics.json``` should appear along with their live values. An example response would be as follows;
 ```
 # HELP netscaler_http_tot_rx_packets tcptotrxpkts
 # TYPE netscaler_http_tot_rx_packets counter
