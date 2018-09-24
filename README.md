@@ -119,7 +119,7 @@ spec:
 </details>
 
 <br />
-*NOTE:*  If TLS is being used by providing the --secure='yes' option, then it is recommended to create a new user on the NetScaler having only read permission. Documentation on creating new users with required permission can be found here. <ADD LINK>
+**NOTE:**  If TLS is being used by providing the --secure='yes' option, then it is recommended to create a new user on the NetScaler having only read permission. Documentation on creating new users with required permission can be found here. <ADD LINK>
 
 Stats Exported by Default:
 ---
