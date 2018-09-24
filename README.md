@@ -76,6 +76,7 @@ The user can then access the exported metrics directly thorugh port 8888 on the 
 <details>
 <summary>Usage as a Pod in Kubernetes</summary>
 <br>
+
 Build the image using docker, use the following yaml file
 The following 
 ```
