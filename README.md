@@ -13,9 +13,7 @@ This is a simple server that scrapes Citrix NetScaler (NS) stats and exports the
 
    In the above diagram, blue boxes represent physical machines or VMs and grey boxes represent containers. 
 There are two physical/virual NetScaler instances present with IPs 10.0.0.1 and 10.0.0.2 and a NetScaler CPX (containerized NetScaler) with an IP 172.17.0.2.
-To monitor stats and counters of these NetScaler instances, an exporter (172.17.0.3) is being run as a container. 
-The exporter is able to get NetScaler stats such as http request rates, ssl encryption-decryption rate, total hits to a vserver, etc from the three NetScaler instances and send them to the Prometheus containter 172.17.0.4.
-The Prometheus container then sends the stats acquired to Grafana which can plot them, set alarms, create heat maps, generate tables, etc as needed to analyse the NetScaler stats. 
+To monitor stats and counters of these NetScaler instances, an exporter (172.17.0.3) is being run as a container. It collects NetScaler stats such as total hits to a vserver, http request rate, ssl encryption-decryption rate, etc from the three NetScaler instances and holds them until the Prometheus containter 172.17.0.4 pulls the stats for storage as a time series. Grafana can then be pointed to the Prometheus container to fetch the stats, plot them, set alarms, create heat maps, generate tables, etc as needed to analyse the NetScaler stats. 
 
    Details about setting up the exporter to work in an environment as given in the figure is provided in the following sections. A note on which NetScaler entities/metrics the exporter scrapes by default and how to modify it is also explained.
 
@@ -82,7 +80,7 @@ The user can then access the exported metrics directly thorugh port 8080 on the 
 <summary>Usage as a Pod in Kubernetes</summary>
 <br>
 
-Once the docker image is built using ```docker build -f Dockerfile -t ns-exporter:v1 ./```, the following yaml file can be used to deploy the exporter as a pod in Kuberenetes and expose it as a service.
+Once the docker image is built using ```docker build -f Dockerfile -t ns-exporter:v1 ./```, the following yaml file can be used to deploy the exporter as a pod in Kuberenetes and expose it as a service. Here, the necessary flags are provided as a list in the ```args:``` section of the yaml file.
 ```
 apiVersion: v1
 kind: Pod
