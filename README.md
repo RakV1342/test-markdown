@@ -67,6 +67,16 @@ Once built, the general structure of the command to run the exporter is very sim
 ```
 docker run -dt -p [host-port:container-port] --name netscaler-exporter ns-exporter:v1 [flags]
 ```
+where the flags are:
+
+flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description
+-----------------|--------------------
+--target-nsip    |Provide the &lt;IP:port&gt; of the Netscalers to be monitored
+--port	        |Specify on which port the stats collected by the exporter should be exposed. Agents like Prometheus will need to scrape this port of the container to access stats being exported
+--username       |Provide the username of the NetScaler to be monitored. Default: 'nsroot'
+--password       |Provide the password of the NetScaler to be monitored. Default: 'nsroot'
+--secure         |Option 'yes' can be provided to run stat collection from NetScalers over TLS. Default: 'no'.
+
 To setup the exporter as given in the diagram, the following command can be used:
 ```
 docker run -dt -p 8080:8080 --name netscaler-exporter ns-exporter:v1 --target-nsip=10.0.0.1:80 --target-nsip=10.0.0.2:80 --target-nsip=172.17.0.2:80 --port 8080
@@ -114,6 +124,16 @@ spec:
   selector:
     app: exp
 ```
+Flags which can be provided to the exporter in the ```args:``` section are:
+
+flag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description
+-----------------|--------------------
+--target-nsip    |Provide the &lt;IP:port&gt; of the Netscalers to be monitored
+--port	        |Specify on which port the stats collected by the exporter should be exposed. Agents like Prometheus will need to scrape this port of the container to access stats being exported
+--username       |Provide the username of the NetScaler to be monitored. Default: 'nsroot'
+--password       |Provide the password of the NetScaler to be monitored. Default: 'nsroot'
+--secure         |Option 'yes' can be provided to run stat collection from NetScalers over TLS. Default: 'no'.
+
 </details>
 
 <br />
