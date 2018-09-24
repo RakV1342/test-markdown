@@ -19,24 +19,37 @@ The Prometheus container then sends the stats acquired to Grafana which can plot
 
    Details about setting up the exporter to work in an environment as given in the figure is provided in the following sections. A note on which NetScaler entities/metrics the exporter scrapes by default and how to modify it is also explained.
 
-<details>
-<summary>How do I dropdown?</summary>
-<br>
-This is how you dropdown.
-<br><br>
-<pre>
-&lt;details&gt;
-&lt;summary&gt;How do I dropdown?&lt;/summary&gt;
-&lt;br&gt;
-This is how you dropdown.
-&lt;details&gt;
-</pre>
-</details>
-
-
 Usage:
 ---
 The exporter can be run as a standalone python script or built into a container.
+
+<details>
+<summary>Usage as a Python Script</summary>
+<br>
+To use the exporter as a python script, the ```prometheus_client``` package needs to be installed. This can be done using 
+```
+pip install prometheus_client
+```
+Now, the following command can be used to run the exporter as a python script;
+```
+nohup python exporter.py [flags] &
+```
+where the flags are:
+
+flag             |    Description
+-----------------|--------------------
+--target-nsip    |Used to specify the &lt;IP:port&gt; of the Netscalers to be monitored
+--port	        |Used to specify which port to bind the exporter to. Agents like Prometheus will need to scrape this port of the container to access stats being exported
+-h               |Provides helper docs related to the exporter
+
+The exporter can be setup as given in the diagram using;
+```
+nohup python exporter.py --target-nsip=10.0.0.1:80 --target-nsip=10.0.0.2:80 --target-nsip=172.17.0.2:80 --port 8888 &
+```
+This directs the exporter container to scrape the 10.0.0.1, 10.0.0.2, and 172.17.0.2, IPs on port 80, and the expose the stats it collects on port 8888. 
+The user can then access the exported metrics directly thorugh port 8888 on the machine where the exporter is running, or Prometheus and Grafana can be setup to view the exported metrics though their GUI.
+
+<details>
 
 ### Usage as a Python Script:
 To use the exporter as a python script, the ```prometheus_client``` package needs to be installed. This can be done using 
