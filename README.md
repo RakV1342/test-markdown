@@ -73,6 +73,45 @@ The user can then access the exported metrics directly thorugh port 8888 on the 
 </details>
 
 
+<details>
+<summary>Usage as a Pod in Kubernetes</summary>
+<br>
+Build the image using docker, use the following yaml file
+The following 
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: exp
+  labels:
+    app: exp
+spec:
+  containers:
+    - name: exp
+      image: ns-exporter:v1
+      args:
+        - "--target-nsip=10.0.0.1:80"
+        - "--target-nsip=10.0.0.2:80"
+        - "--target-nsip=10.0.0.3:80"
+        - "--port=8888"
+      imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: exp
+  labels:
+    app: exp
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8888
+    targetPort: 8888
+    name: exp-port
+  selector:
+    app: exp
+```
+
 Stats Exported by Default:
 ---
 
