@@ -77,8 +77,7 @@ The user can then access the exported metrics directly thorugh port 8888 on the 
 <summary>Usage as a Pod in Kubernetes</summary>
 <br>
 
-Build the image using docker, use the following yaml file
-The following 
+Once the docker image is built using ```docker build -f Dockerfile -t ns-exporter:v1 ./```, the following yaml file can be used to deploy the exporter as a pod in Kuberenetes.
 ```
 apiVersion: v1
 kind: Pod
