@@ -306,3 +306,22 @@ netscaler_services_tot_request_bytes{nsip="10.0.0.2:80",service_ip="20.0.0.57",s
 netscaler_services_tot_request_bytes{nsip="10.0.0.2:80",service_ip="20.0.0.60",servicegroup_name="svcgrp2"} 344.0
 ```
 Stats (of counter and guage type) for enities such as http, tcp, ip, and service_groups is seen in the example response given above. Labels attached to each stat appear in the curly braces ```{}``` next to the stat name.
+
+
+Prometheus and Grafana Integration
+---
+This section describes how to bring up basic Prometheus and Grafana containers to provide an end to end data collection and visualization setup. 
+
+-- drop down for prometheus bring up --
+PROM CFG
+PROM cmd for bringup
+Verification: Should see exporter in the Targets in UP state
+
+-- drop down for grafana bring up --
+graf cmd
+Import dashboard
+Adding a datasource (start with "prometheus" -- all small)
+Verification: Should see graphs for dash, dash, dash metrics **if configured on the NS** 
+
+
+
