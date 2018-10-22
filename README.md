@@ -377,6 +377,9 @@ The steps bellow can be followed to setup up a Grafana container with a sample d
 
 5. To start seeing graphs and values in the dashboard, add the Prometheus datasource(s) to Grafana. Once added, they will automatically get detected in the dropdown variable filters. **NOTE:** Ensure the name of the Prometheus datasource starts with the word "prometheus" (Eg. prometheus_datasource1).
 
+6. Filtering/Further Usage through auto-detected variables: ADD ADD ADD ADD ADD
+
+
 </details>
 <br>
 
