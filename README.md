@@ -352,7 +352,8 @@ scrape_configs:
   - targets: ['<EXPORTER_IP>:<EXPORTER_PORT>']
 ```
 
-3. Run the Prometheus container: ```docker run -dt -p 8888:8888 -v /location/of/prometheus.cfg/file:/etc/prometheus/prometheus.cfg prom/prometheus:latest --config.file=/etc/prometheus/prometheus.cfg```
+3. Run the Prometheus container: 
+```docker run -dt -p 8888:8888 -v /location/of/prometheus.cfg/file:/etc/prometheus/prometheus.cfg prom/prometheus:latest --config.file=/etc/prometheus/prometheus.cfg```
 
 </details>
 <br>
