@@ -168,6 +168,9 @@ Metrics whose value can only increase with time are called counters and those wh
 Accordingly, entities and their metrics have been provided in the ```metrics.json``` file. By modifying ```metrics.json```, new entities and their metrics which are not exported by default can be included. 
 For example, to  export ```aaa``` stats, the lines given between ```-.-.-.-``` can be added as follows:
 
+<details>
+<summary>Excerpt from metrics.json</summary>
+<br>
 
 ```
 {
@@ -247,6 +250,8 @@ For example, to  export ```aaa``` stats, the lines given between ```-.-.-.-``` c
 }
 
 ```
+
+</details>
 
 On a given NetScaler, some entities such as lbvserver, csvserver, interfaces, etc can have multiple instances of that entity configured, each having its own name. Such entities have an additional structure in ```metrics.json``` called ```label```.
 A label is used for such entities to differenciate stats among different instances of that entity based on name, ip, type, or any other suitable characteristic of that entitiy. 
