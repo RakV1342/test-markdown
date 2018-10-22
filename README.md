@@ -341,3 +341,15 @@ Verification: Should see graphs for dash, dash, dash metrics **if configured on 
 
 
 
+
+<details>
+<summary>Sample Dropdown</summary>
+<br>
+   
+NONE
+NONE
+NONE
+
+</details>
+<br>
+
