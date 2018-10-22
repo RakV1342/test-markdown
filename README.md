@@ -385,6 +385,8 @@ The steps bellow can be followed to setup up a Grafana container with a sample d
 6. Filtering/Further Usage through auto-detected variables: ADD ADD ADD ADD ADD
 <img src="https://user-images.githubusercontent.com/39149385/47292484-be058680-d624-11e8-9f8b-33f4ea482903.png" width="800">
 
+For more info on custominzing Grafana, please take a look at their [documentation](http://docs.grafana.org/).
+
 </details>
 <br>
 
