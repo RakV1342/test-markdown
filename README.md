@@ -373,20 +373,17 @@ The steps bellow can be followed to setup up a Grafana container with a sample d
 
 3. Import the ```grafana_sample_dashboard.json``` file: Login to Grafana using admin:admin, from the column on the left select the ```+``` symbol, select "Import", and select "upload .json file".
 
-![graf1_crop](https://user-images.githubusercontent.com/39149385/47292375-5e0ee000-d624-11e8-9410-77d46417e358.png)
 <img src="https://user-images.githubusercontent.com/39149385/47292375-5e0ee000-d624-11e8-9410-77d46417e358.png" width="200">
 
 4. This will import a sample template which displays CPU Utilization, Memory Utilization, Total LB vserver Hits, LB vserver Hits Rate, and HTTP Hits Rate. 
 
 5. To start seeing graphs and values in the dashboard, add the Prometheus datasource(s) to Grafana. Once added, they will automatically get detected in the dropdown variable filters. **NOTE:** Ensure the name of the Prometheus datasource starts with the word "prometheus" (Eg. prometheus_datasource1).
 
-![graf2_crop](https://user-images.githubusercontent.com/39149385/47292394-6a933880-d624-11e8-9e4d-69140af36512.png)
-![graf3_crop](https://user-images.githubusercontent.com/39149385/47292411-77179100-d624-11e8-97b6-28ee99b94873.png)
-
+<img src="https://user-images.githubusercontent.com/39149385/47292394-6a933880-d624-11e8-9e4d-69140af36512.png" width="200">
+<img src="https://user-images.githubusercontent.com/39149385/47292411-77179100-d624-11e8-97b6-28ee99b94873.png" width="300">
 
 6. Filtering/Further Usage through auto-detected variables: ADD ADD ADD ADD ADD
-![graf4_crop](https://user-images.githubusercontent.com/39149385/47292484-be058680-d624-11e8-9f8b-33f4ea482903.png)
-
+<img src="https://user-images.githubusercontent.com/39149385/47292484-be058680-d624-11e8-9f8b-33f4ea482903.png" width="800">
 
 </details>
 <br>
