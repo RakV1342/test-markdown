@@ -318,7 +318,7 @@ netscaler_services_tot_request_bytes{nsip="10.0.0.2:80",service_ip="20.0.0.57",s
 netscaler_services_tot_request_bytes{nsip="10.0.0.2:80",service_ip="20.0.0.60",servicegroup_name="svcgrp2"} 344.0
 ```
 
-<details>
+</details>
 <br>
 
 Stats (of counter and guage type) for enities such as http, tcp, ip, and service_groups is seen in the example response given above. Labels attached to each stat appear in the curly braces ```{}``` next to the stat name.
