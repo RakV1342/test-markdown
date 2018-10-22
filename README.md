@@ -333,10 +333,10 @@ This section describes how to bring up basic Prometheus and Grafana containers t
 <summary>Setup of Prometheus</summary>
 <br>
 
-The following steps can be followed to setup a Prometheus container:
+These steps can be followed to setup a Prometheus container:
 1. Pull the docker image: ```docker pull prom/prometheus```.
 
-2. Create the ```prometheus.cfg``` file as given below, and providie the Exporter's IP and Port in the place of <EXPORTER_IP> and <EXPORTER_PORT>. For example the targets line might read ```- targets: ['10.100.200.3:8888']```.
+2. Create the ```prometheus.cfg``` file as given below, and providie the Exporter's IP and Port in the place of <EXPORTER_IP> and <EXPORTER_PORT>. For example, the targets line might read ```- targets: ['10.100.200.3:8888']```.
 ```
 global:
   scrape_interval: 15s
@@ -365,10 +365,17 @@ scrape_configs:
 <summary>Setup of Grafana</summary>
 <br>
 
-In order to setup a Prometheus container we need to pull the ```prom/prometheus``` docker image and provide the config file containing the exporter IP and port details.
-NONE
-NONE
-NONE
+The steps bellow can be followed to setup up a Grafana container with a sample dashboard.
+
+1. Pull grafana image: ```docker pull grafana/grafana:latest```
+
+2. Run grafana container: ```docker run -dt 3000:3000 grafana/grafana:latest```
+
+3. Import the ```grafana_sample_dashboard.json``` file: Login to Grafana using admin:admin, from the column on the left select the ```+``` symbol, select "Import", and select "upload .json file".
+
+4. This will import a sample template which displays CPU Utilization, Memory Utilization, Total LB vserver Hits, LB vserver Hits Rate, and HTTP Hits Rate. 
+
+5. To start seeing graphs and values in the dashboard, add the Prometheus datasource(s) to Grafana. Once added, they will automatically get detected in the dropdown variable filters. **NOTE:** Ensure the name of the Prometheus datasource starts with the word "prometheus" (Eg. prometheus_datasource1).
 
 </details>
 <br>
