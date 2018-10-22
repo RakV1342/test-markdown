@@ -328,6 +328,50 @@ Prometheus and Grafana Integration
 ---
 This section describes how to bring up basic Prometheus and Grafana containers to provide an end to end data collection and visualization setup. 
 
+
+<details>
+<summary>Setup of Prometheus</summary>
+<br>
+
+The following steps can be followed to setup a Prometheus container:
+1. Pull the docker image: ```docker pull prom/prometheus```
+
+2. Create the ```prometheus.cfg``` file as given below, and providie the Exporter's IP and Port in the place of <EXPORTER_IP> and <EXPORTER_PORT>. For example the targets line might read ```- targets: ['10.106.166.166:8888']```.
+```
+global:
+  scrape_interval: 15s
+  scrape_timeout:  10s
+
+  external_labels:
+    monitor: 'prometheus-monitor'
+
+scrape_configs:
+- job_name: prometheus
+
+  static_configs:
+  - targets: ['<EXPORTER_IP>:<EXPORTER_PORT>']
+```
+
+
+3. Run the Prometheus container: 
+
+</details>
+<br>
+
+<details>
+<summary>Setup of Grafana</summary>
+<br>
+
+In order to setup a Prometheus container we need to pull the ```prom/prometheus``` docker image and provide the config file containing the exporter IP and port details.
+NONE
+NONE
+NONE
+
+</details>
+<br>
+
+
+
 -- drop down for prometheus bring up --
 PROM CFG
 PROM cmd for bringup
