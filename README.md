@@ -334,9 +334,9 @@ This section describes how to bring up basic Prometheus and Grafana containers t
 <br>
 
 The following steps can be followed to setup a Prometheus container:
-1. Pull the docker image: ```docker pull prom/prometheus```
+1. Pull the docker image: ```docker pull prom/prometheus```.
 
-2. Create the ```prometheus.cfg``` file as given below, and providie the Exporter's IP and Port in the place of <EXPORTER_IP> and <EXPORTER_PORT>. For example the targets line might read ```- targets: ['10.106.166.166:8888']```.
+2. Create the ```prometheus.cfg``` file as given below, and providie the Exporter's IP and Port in the place of <EXPORTER_IP> and <EXPORTER_PORT>. For example the targets line might read ```- targets: ['10.100.200.3:8888']```.
 ```
 global:
   scrape_interval: 15s
@@ -352,11 +352,14 @@ scrape_configs:
   - targets: ['<EXPORTER_IP>:<EXPORTER_PORT>']
 ```
 
-3. Run the Prometheus container: <br> 
-```docker run -dt -p 8888:8888 -v /location/of/prometheus.cfg/file:/etc/prometheus/prometheus.cfg prom/prometheus:latest --config.file=/etc/prometheus/prometheus.cfg```
+3. Run the Prometheus container while providing the location of the ```prometheus.cfg``` file created in the above step: <br> 
+```docker run -dt -p 9090:9090 -v /location/of/prometheus.cfg/file:/etc/prometheus/prometheus.cfg prom/prometheus:latest --config.file=/etc/prometheus/prometheus.cfg```
+
+4. VERIFICATION: Go to the Prometheus web page and under the "Status" dropdown select "Targets". The exporter should appear as a target and in a few minutes time, must come up in ```UP``` state. This means that Prometheus is able to collect stats from the Exporter.
 
 </details>
 <br>
+
 
 <details>
 <summary>Setup of Grafana</summary>
