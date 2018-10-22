@@ -169,7 +169,7 @@ Accordingly, entities and their metrics have been provided in the ```metrics.jso
 For example, to  export ```aaa``` stats, the lines given between ```-.-.-.-``` can be added as follows:
 
 <details>
-<summary>Excerpt from metrics.json</summary>
+<summary>metrics.json</summary>
 <br>
 
 ```
@@ -267,6 +267,11 @@ http://<hostIP>:<port>
 curl http://<hostIP>:<port>
 ```
 where ```hostIP``` is the IP of the host on which the python script or container is running, and ```port``` is the value of the ```--port``` flag which had been provided (```8080``` as per the example). All the stats for all the entities configured on the NetScaler and provided in ```metrics.json``` should appear along with their live values. An example response would be as follows;
+
+<details>
+<summary>Sample Output</summary>
+<br>
+
 ```
 # HELP netscaler_http_tot_rx_packets tcptotrxpkts
 # TYPE netscaler_http_tot_rx_packets counter
@@ -312,6 +317,10 @@ netscaler_services_tot_request_bytes{nsip="10.0.0.2:80",service_ip="20.0.0.56",s
 netscaler_services_tot_request_bytes{nsip="10.0.0.2:80",service_ip="20.0.0.57",servicegroup_name="svcgrp"} 946.0
 netscaler_services_tot_request_bytes{nsip="10.0.0.2:80",service_ip="20.0.0.60",servicegroup_name="svcgrp2"} 344.0
 ```
+
+<details>
+<br>
+
 Stats (of counter and guage type) for enities such as http, tcp, ip, and service_groups is seen in the example response given above. Labels attached to each stat appear in the curly braces ```{}``` next to the stat name.
 
 
