@@ -352,7 +352,7 @@ scrape_configs:
 ```
 
 3. Run the Prometheus container while providing the location of the ```prometheus.cfg``` file created in the above step: <br> 
-```docker run -dt -p 9090:9090 -v /location/of/prometheus.cfg/file:/etc/prometheus/prometheus.cfg prom/prometheus:latest --config.file=/etc/prometheus/prometheus.cfg```
+```docker run -dt -p 9090:9090 -v /path/to/prometheus.cfg:/etc/prometheus/prometheus.cfg prom/prometheus:latest --config.file=/etc/prometheus/prometheus.cfg```
 
 4. VERIFICATION: Go to the Prometheus web page and under the "Status" dropdown select "Targets". The exporter should appear as a target and in a few minutes time, must come up in ```UP``` state. This means that Prometheus is able to collect stats from the Exporter.
 
@@ -370,21 +370,21 @@ The steps bellow can be followed to setup up a Grafana container with a sample d
 
 2. Run grafana container: ```docker run -dt 3000:3000 grafana/grafana:latest```
 
-3. Import the ```grafana_sample_dashboard.json``` file: Login to Grafana using admin:admin, from the column on the left select the ```+``` symbol, select "Import", and select "upload .json file".
+3. Import the sample grafana dashboard file: Login to Grafana using admin:admin, from the column on the left select the ```+``` symbol, select "Import", and select "upload .json file". Now, navigate to and upload ```sample_grafana_dashboard.json```.
 
 <img src="https://user-images.githubusercontent.com/39149385/47292375-5e0ee000-d624-11e8-9410-77d46417e358.png" width="200">
 
 4. This will import a sample template which displays CPU Utilization, Memory Utilization, Total LB vserver Hits, LB vserver Hits Rate, and HTTP Hits Rate. 
 
-5. To start seeing graphs and values in the dashboard, add the Prometheus datasource(s) to Grafana. Once added, they will automatically get detected in the dropdown variable filters. **NOTE:** Ensure the name of the Prometheus datasource starts with the word "prometheus" (Eg. prometheus_datasource1).
+5. To start seeing graphs and values in the dashboard, add the Prometheus datasource(s) to Grafana. While adding the datasource, ensure the name of the Prometheus datasource starts with the word "prometheus" (eg. prometheus_datasource1). Once added, datasources starting with the word "prometheus" will automatically get detected in the dropdown filters of the dashboard. 
 
 <img src="https://user-images.githubusercontent.com/39149385/47292394-6a933880-d624-11e8-9e4d-69140af36512.png" width="200">
 <img src="https://user-images.githubusercontent.com/39149385/47292411-77179100-d624-11e8-97b6-28ee99b94873.png" width="300">
 
-6. Filtering/Further Usage through auto-detected variables: ADD ADD ADD ADD ADD
+6. Usage of Dashboard: By default the dashboard shows CPU utilization percentage, memory utilization percentage, total hits to lbvservers, lbvserver hit rate, and http hit rate. The dashboard can be expanded to include graphs of any other stats which the exporter is collecting. For more information on modifying the Grafana dashboard, please take a look at their [documentation](http://docs.grafana.org/) or demo [videos](https://www.youtube.com/watch?v=mgcJPREl3CU).
 <img src="https://user-images.githubusercontent.com/39149385/47292484-be058680-d624-11e8-9f8b-33f4ea482903.png" width="800">
 
-For more info on custominzing Grafana, please take a look at their [documentation](http://docs.grafana.org/).
+**NOTE:** Data being plotted on the graphs can be filtered based on lbvservers or datasources using the blue dropdown buttons at the top of the dashboard.
 
 </details>
 <br>
