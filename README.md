@@ -1,7 +1,7 @@
 Monitoring Citrix Ingress Controller and CPX-EW using NetScaler Metrics Exporter and Prometheus Operator
 ===
 
-This document describes how the [NetScaler Metrics Exporter](https://github.com/citrix/netscaler-metrics-exporter) and [Prometheus-Operator](https://github.com/coreos/prometheus-operator) can be used to monitor ingress devices and CPX-EW devices.
+This document describes how the [NetScaler Metrics Exporter](https://github.com/citrix/netscaler-metrics-exporter) and [Prometheus-Operator](https://github.com/coreos/prometheus-operator) can be used to monitor VPX/CPX ingress devices and CPX-EW devices.
 
 
 Launching Promethus-Operator
@@ -31,6 +31,7 @@ prometheus-operator-7d9fd546c4-m8t7v   1/1       Running   0          2h
 Expose prom-k8s and grafana as node port. 
 ADD: prom-k8s targets page
 
+
 Configuring Netscaler Metrics Exporter for Ingress Device
 ---
 This section describes how to integrate the Netscaler Metrics Exporter with the VPX or CPX ingress device. 
@@ -39,7 +40,7 @@ This section describes how to integrate the Netscaler Metrics Exporter with the 
 <summary>VPX Ingress Device</summary>
 <br>
 
-To monitor a VPX device, the netscaler metrics exporter will be run a pod within the kubernetes cluster and the arguments fed to it will point to the IP of the VPX ingress device. The yaml file to deply such an exporter is given below:
+To monitor a VPX device, the netscaler metrics exporter will be run as a pod within the kubernetes cluster and the arguments fed to it will point to the IP of the VPX ingress device. The yaml file to deploy such an exporter is given below;
 
 ```
 apiVersion: v1
@@ -72,16 +73,94 @@ spec:
   selector:
     app: exp
 ```
-
-
+The IP and port of the VPX device needs to be filled in as the ```--target-nsip``` (Eg. ```--target-nsip=10.0.0.20```). 
 </details>
 
 <details>
 <summary>CPX Ingress Device</summary>
 <br>
-add
-  add
-  add
+  
+To monitor a CPX ingress device, the exporter is added as a side-car. An example yaml file of a CPX ingress device with an exporter as a side car is given below;
+```
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cpx-ingress
+  labels:
+    name: cpx-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cpx-ingress
+  template:
+    metadata:
+      labels:
+        name: cpx-ingress
+      annotations:
+        NETSCALER_AS_APP: "True"
+    spec:
+      serviceAccountName: cpx
+      containers:
+        - name: cpx-ingress
+          image: "us.gcr.io/citrix-217108/citrix-k8s-cpx-ingress:latest"
+          imagePullPolicy: Always
+          securityContext:
+            privileged: true
+          env:
+            - name: "EULA"
+              value: "YES"
+            - name: "NS_PROTOCOL"
+              value: "HTTP"
+            #Define the NITRO port here
+            - name: "NS_PORT"
+              value: "9080"
+          args:
+            - --ingress-classes
+              citrix-ingress
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+            - name: nitro-http
+              containerPort: 9080
+            - name: nitro-https
+              containerPort: 9443
+        # Adds exporter as a sidecar
+        - name: exporter
+          image: ns-exporter:v1
+          args:
+            - "--target-nsip=192.0.0.2:80"
+            - "--port=8888"
+          imagePullPolicy: IfNotPresent
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cpx-ingress
+  labels:
+    name: cpx-ingress
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  selector:
+    name: cpx-ingress
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: https
+      port: 443
+      targetPort: https
+    # Expose exporter as a k8s service
+    - name: exp-port
+      port: 8888
+      targetPort: 8888
+```
+Here, the exporter uses the ```192.0.0.2``` local IP to fetch metrics from the CPX.
+
+
 </details>
 
 
@@ -103,6 +182,11 @@ The service monitor to monitor the netscaler-metrics-exporter and intimate Prome
 <ADD>
 
 ```
+
+
+Adding Service Monitors
+---
+svc mon to detect required apps.
 
 
 Verification
