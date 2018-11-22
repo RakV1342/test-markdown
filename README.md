@@ -221,29 +221,84 @@ Here, the exporter uses the ```192.168.0.2``` local IP to fetch metrics from the
 
 
 
-Adding NetScaler Metrics Exporter as a Side-Car to CPX
+Detecting Pods using Service Monitors
 ---
-With the Prometheus Operator (kube-promehteus) setup, the netscaler-metrics-exporter can be added as a sidecar to the CPX and then exposed to Prometheus Operator using ServiceMonitors.
+The exporter added in the above steps helps collect data from the VPX/CPX ingress device and CPX-EW devices. This exporter needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana.
 
-Adding netscaler-metrics-exporter as a sidecar to CPX is simply the addition of a few lines to the ```containers:``` and ```Services``` sections of the CPX yaml file.
+Prometheus Operator uses the concept of Service Monitors to automatically detect pods belonging to a service using the labels attached to those pods. By creating a Service Monitor for all the exporters responsible for the NetScaler devices, we can begin to....
 
-
-1. For CPX-Ingress
-<ADD>
-2. For CPX-EW
-<ADD>
-
-
-The service monitor to monitor the netscaler-metrics-exporter and intimate Prometheus Operator of its existance can be added using the yaml file given below;
-```
-<ADD>
+<details>
+<summary>Service Monitor for VPX exporter</summary>
+<br>
 
 ```
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: rak-app
+  name: rak-app
+  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 30s
+    port: exp-port
+  jobLabel: k8s-app
+  selector:
+    matchLabels:
+      k8s-app: rak-app
+```
+
+</details>
+
+<details>
+<summary>Service Monitor for CPX ingress exporter</summary>
+<br>
+
+```
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: rak-app
+  name: rak-app
+  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 30s
+    port: exp-port
+  jobLabel: k8s-app
+  selector:
+    matchLabels:
+      k8s-app: rak-app
+```
+
+</details>
 
 
-Adding Service Monitors
----
-svc mon to detect required apps.
+<details>
+<summary>Service Monitor for CPX-EW exporter</summary>
+<br>
+
+```
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: rak-app
+  name: rak-app
+  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 30s
+    port: exp-port
+  jobLabel: k8s-app
+  selector:
+    matchLabels:
+      k8s-app: rak-app
+```
+
+</details>
 
 
 Verification
