@@ -104,7 +104,6 @@ spec:
       containers:
         - name: cpx-ingress
           image: "us.gcr.io/citrix-217108/citrix-k8s-cpx-ingress:latest"
-          imagePullPolicy: Always
           securityContext:
             privileged: true
           env:
@@ -115,9 +114,6 @@ spec:
             #Define the NITRO port here
             - name: "NS_PORT"
               value: "9080"
-          args:
-            - --ingress-classes
-              citrix-ingress
           ports:
             - name: http
               containerPort: 80
@@ -127,13 +123,13 @@ spec:
               containerPort: 9080
             - name: nitro-https
               containerPort: 9443
-        # Adds exporter as a sidecar
+        # Add exporter as a sidecar
         - name: exporter
           image: ns-exporter:v1
           args:
             - "--target-nsip=192.0.0.2:80"
             - "--port=8888"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: IfNotPresent      
 ---
 kind: Service
 apiVersion: v1
@@ -142,8 +138,6 @@ metadata:
   labels:
     name: cpx-ingress
 spec:
-  externalTrafficPolicy: Local
-  type: LoadBalancer
   selector:
     name: cpx-ingress
   ports:
@@ -159,7 +153,6 @@ spec:
       targetPort: 8888
 ```
 Here, the exporter uses the ```192.0.0.2``` local IP to fetch metrics from the CPX.
-
 
 </details>
 
