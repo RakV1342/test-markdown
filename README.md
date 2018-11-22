@@ -11,7 +11,7 @@ The manifest files help deploy a basic working model of Prometheus Operator with
 ```
 kubectl create -f prometheus-operator/contrib/kube-prometheus/manifests/
 ```
-This creates several pods and services, of which ```prometheus-k8s-xx``` pods are for metrics aggregation and timestamping and ```grafana``` pods. An output similar to this should be seen;
+This creates several pods and services, of which ```prometheus-k8s-xx``` pods are for metrics aggregation and timestamping and ```grafana``` pods for visualization. An output similar to this should be seen;
 ```
 $ kubectl get pods -n monitoring
 NAME                                   READY     STATUS    RESTARTS   AGE
@@ -225,7 +225,7 @@ Detecting Pods using Service Monitors
 ---
 The exporter added in the above steps helps collect data from the VPX/CPX ingress device and CPX-EW devices. This exporter needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana.
 
-Prometheus Operator uses the concept of Service Monitors to automatically detect pods belonging to a service using the labels attached to those pods. By creating a Service Monitor for all the exporters responsible for the NetScaler devices, we can begin to....
+Prometheus Operator uses the concept of Service Monitors to automatically detect pods belonging to a service using the labels attached to that service. So, to monitor the netscaler devices, a Service Monitor corresponding to the exporters of each class of NetScaler device (VPX ingress, CPX ingress, CPX-EW) needs to be created. Example yaml files are provided below;
 
 <details>
 <summary>Service Monitor for VPX exporter</summary>
