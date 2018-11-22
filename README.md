@@ -156,6 +156,70 @@ Here, the exporter uses the ```192.0.0.2``` local IP to fetch metrics from the C
 
 </details>
 
+Configuring Netscaler Metrics Exporter for CPX-EW Device
+---
+Similar to the CPX ingress device, the exporter is added as a sidecar to the CPX-EW device. An example yaml file is provided below;
+
+<details>
+<summary>CPX-EW Dvice</summary>
+<br>
+
+```
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: cpx
+spec:
+  template:
+    metadata:
+      name: cpx
+      labels:
+        app: cpx-daemon
+      annotations:
+        NETSCALER_AS_APP: "True"
+    spec:
+      serviceAccountName: cpx
+      hostNetwork: true
+      containers:
+        - name: cpx
+          image: "in-docker-reg.eng.citrite.net/cpx-dev/cpx:12.1-48.118"
+          securityContext: 
+             privileged: true
+          env:
+          - name: "EULA"
+            value: "yes"
+          - name: "NS_NETMODE"
+            value: "HOST"
+          #- name: "kubernetes_url"
+          #  value: "https://10.106.76.232:6443"
+        # Add exporter as a sidecar
+        - name: exporter
+          image: ns-exporter:v1
+          args:
+            - "--target-nsip=192.168.0.2:80"
+            - "--port=8888"
+          imagePullPolicy: IfNotPresent      
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cpx-ew
+  labels:
+    name: cpx-ew
+spec:
+  selector:
+    name: cpx-ew
+  ports:
+    # Expose exporter as a k8s service
+    - name: exp-port
+      port: 8888
+      targetPort: 8888
+```
+Here, the exporter uses the ```192.168.0.2``` local IP to fetch metrics from the CPX.
+
+</details>
+
+
 
 Adding NetScaler Metrics Exporter as a Side-Car to CPX
 ---
