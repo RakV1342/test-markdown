@@ -300,13 +300,13 @@ spec:
 
 Visualization of Metrics
 ---
-Describe:::: Prometheus Operator will take a few minutes to detect the presence of the netscaler-metrics-exporter. After 3-5 minutes, it should appear in the ```Targets``` page;
+Describe:::: Prometheus Operator will take a few minutes to detect the presence of the netscaler-metrics-exporter. After 3-5 minutes, it should appear in the ```Targets``` page; Should be something like this.
 <ADD>
   
 ![image](https://user-images.githubusercontent.com/39149385/49031498-1ace0100-f1d0-11e8-90c1-c4d0589819cc.png)
 
 
-Describe:::: Now metrics being collected from CPX by netscaler-metrics-exporter will be visible on Grafana as well.
+Describe:::: Now metrics being collected from CPX by netscaler-metrics-exporter will be visible on Grafana as well.....typing NS_ will bring list. Select any to monitor. To add more stats refer metrics exp link. Can also use the json file provided there give link to json and how to add json file
 ![image](https://user-images.githubusercontent.com/39149385/49031958-60d79480-f1d1-11e8-9cde-7fa26647f751.png)
 
 
