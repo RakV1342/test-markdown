@@ -33,24 +33,27 @@ prometheus-operator-7d9fd546c4-m8t7v   1/1       Running   0          2h
 <details>
 <summary>prometheus-service.yaml</summary>
 <br>
+
 ```
   ADD
   ADD
   ADD
 ```
-To apply these changes into the kubernetes cluseter run: ```kubectl apply -f prometheus-service.yaml```
+To apply these changes into the kubernetes cluseter run: ```kubectl apply -f prometheus-service.yaml```.
 
 </details>
+
 
 <details>
 <summary>grafana-service.yaml</summary>
 <br>
+
 ```
   ADD
   ADD
   ADD
 ```
-To apply these changes into the kubernetes cluseter run: ```kubectl apply -f grafana-service.yaml```
+To apply these changes into the kubernetes cluseter run: ```kubectl apply -f grafana-service.yaml```.
 
 </details>
 
