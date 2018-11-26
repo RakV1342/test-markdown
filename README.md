@@ -271,7 +271,7 @@ Here, the exporter uses the ```192.168.0.2``` local IP to fetch metrics from the
 
 
 
-Service Monitors to Detect Netscaler Devices
+Service Monitors to Detect Netscalers
 ---
 The netscaler metrics exporters helps collect data from the VPX/CPX ingress and CPX-EW devices. This exporters needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana. Prometheus Operator uses the concept of ```ServiceMonitors``` to detect pods belonging to a service, using the labels attached to that service. 
 
@@ -298,7 +298,7 @@ spec:
 ```
 
 
-Verification
+Visualization of Metrics
 ---
 Describe:::: Prometheus Operator will take a few minutes to detect the presence of the netscaler-metrics-exporter. After 3-5 minutes, it should appear in the ```Targets``` page;
 <ADD>
