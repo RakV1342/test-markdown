@@ -47,7 +47,6 @@ spec:
   ports:
   - name: web
     port: 9090
-    nodePort: 30100
     targetPort: web
   selector:
     app: prometheus
@@ -73,7 +72,6 @@ spec:
   ports:
   - name: http
     port: 3000
-    nodePort: 30300
     targetPort: http
   selector:
     app: grafana
@@ -213,7 +211,7 @@ Here, the exporter uses the ```192.0.0.2``` local IP to fetch metrics from the C
 
 
 <details>
-<summary>CPX-EW Dvice</summary>
+<summary>CPX-EW Device</summary>
 <br>
 
 To monitor a CPX-EW (east-west) device, the exporter is added as a side-car. An example yaml file of a CPX-EW device with an exporter as a side car is given below;
@@ -244,10 +242,10 @@ spec:
           - name: "NS_NETMODE"
             value: "HOST"
           #- name: "kubernetes_url"
-          #  value: "https://10.106.76.232:6443"
+          #  value: "https://10.106.xx.xx:6443"
         # Add exporter as a sidecar
         - name: exporter
-          image: ns-exporter:v1
+          image: "quay.io/citrix/netscaler-metrics-exporter:v1.0.0"
           args:
             - "--target-nsip=192.168.0.2:80"
             - "--port=8888"
@@ -256,15 +254,14 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: cpx-ew
+  name: exporter-cpx-ew
   labels:
-    name: cpx-ew
+    service-type: citrix-adc-monitor
 spec:
   selector:
-    name: cpx-ew
+    app: cpx-ew
   ports:
-    # Expose exporter as a k8s service
-    - name: exp-port
+    - name: exporter-port
       port: 8888
       targetPort: 8888
 ```
@@ -305,6 +302,9 @@ Verification
 ---
 Prometheus Operator will take a few minutes to detect the presence of the netscaler-metrics-exporter. After 3-5 minutes, it should appear in the ```Targets``` page;
 <ADD>
+  
+![image](https://user-images.githubusercontent.com/39149385/49031498-1ace0100-f1d0-11e8-90c1-c4d0589819cc.png)
+
 
 Now metrics being collected from CPX by netscaler-metrics-exporter will be visible on Grafana as well.
 <ADD>
