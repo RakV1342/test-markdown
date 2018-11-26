@@ -1,7 +1,7 @@
-Monitoring CPX/VPX Ingress and CPX-EW using NetScaler Metrics Exporter and Prometheus Operator
+Monitoring NetScaler Appliances in Kubernetes
 ===
 
-This document describes how the [NetScaler Metrics Exporter](https://github.com/citrix/netscaler-metrics-exporter) and [Prometheus-Operator](https://github.com/coreos/prometheus-operator) can be used to monitor VPX/CPX ingress devices and CPX-EW devices.
+This document describes how the [NetScaler Metrics Exporter](https://github.com/citrix/netscaler-metrics-exporter) and [Prometheus-Operator](https://github.com/coreos/prometheus-operator) can be used to monitor VPX/CPX ingress devices and CPX-EW (east-west) devices.
 
 
 Launching Promethus-Operator
@@ -32,15 +32,15 @@ Expose prom-k8s and grafana as node port.
 ADD: prom-k8s targets page
 
 
-Configuring Netscaler Metrics Exporter for Ingress Device
+Configuring Netscaler Metrics Exporter
 ---
-This section describes how to integrate the Netscaler Metrics Exporter with the VPX or CPX ingress device. 
+This section describes how to integrate the Netscaler Metrics Exporter with the VPX/CPX ingress or CPX-EW devices. 
 
 <details>
 <summary>VPX Ingress Device</summary>
 <br>
 
-To monitor a VPX device, the netscaler metrics exporter will be run as a pod within the kubernetes cluster and the arguments fed to it will point to the IP of the VPX ingress device. The yaml file to deploy such an exporter is given below;
+To monitor an ingress VPX device, the netscaler-metrics-exporter will be run as a pod within the kubernetes cluster. The IP of the VPX ingress device will be provided as an argument to the exporter. An example yaml file to deploy such an exporter is given below;
 
 ```
 apiVersion: v1
@@ -156,14 +156,11 @@ Here, the exporter uses the ```192.0.0.2``` local IP to fetch metrics from the C
 
 </details>
 
-Configuring Netscaler Metrics Exporter for CPX-EW Device
----
-Similar to the CPX ingress device, the exporter is added as a sidecar to the CPX-EW device. An example yaml file is provided below;
 
 <details>
 <summary>CPX-EW Dvice</summary>
 <br>
-
+To monitor a CPX-EW (east-west) device, the exporter is added as a side-car. An example yaml file of a CPX-EW device with an exporter as a side car is given below;
 ```
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -221,14 +218,14 @@ Here, the exporter uses the ```192.168.0.2``` local IP to fetch metrics from the
 
 
 
-Detecting Pods using Service Monitors
+Service Monitors to Detect Netscaler Devices
 ---
-The exporter added in the above steps helps collect data from the VPX/CPX ingress device and CPX-EW devices. This exporter needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana.
+The exporter added in the above steps helps collect data from the VPX/CPX ingress and CPX-EW devices. This exporter needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana. Prometheus Operator uses the concept of Service Monitors to automatically detect pods belonging to a service using the labels attached to that service. 
 
-Prometheus Operator uses the concept of Service Monitors to automatically detect pods belonging to a service using the labels attached to that service. So, to monitor the netscaler devices, a Service Monitor corresponding to the exporters of each class of NetScaler device (VPX ingress, CPX ingress, CPX-EW) needs to be created. Example yaml files are provided below;
+The following example yaml file will detect all exporter services (given in the example yaml files above) which have the label citrix-adc associated with them. 
 
 <details>
-<summary>Service Monitor for VPX exporter</summary>
+<summary>Service Monitor</summary>
 <br>
 
 ```
@@ -251,54 +248,6 @@ spec:
 
 </details>
 
-<details>
-<summary>Service Monitor for CPX ingress exporter</summary>
-<br>
-
-```
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    k8s-app: rak-app
-  name: rak-app
-  namespace: monitoring
-spec:
-  endpoints:
-  - interval: 30s
-    port: exp-port
-  jobLabel: k8s-app
-  selector:
-    matchLabels:
-      k8s-app: rak-app
-```
-
-</details>
-
-
-<details>
-<summary>Service Monitor for CPX-EW exporter</summary>
-<br>
-
-```
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    k8s-app: rak-app
-  name: rak-app
-  namespace: monitoring
-spec:
-  endpoints:
-  - interval: 30s
-    port: exp-port
-  jobLabel: k8s-app
-  selector:
-    matchLabels:
-      k8s-app: rak-app
-```
-
-</details>
 
 
 Verification
