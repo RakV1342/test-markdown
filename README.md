@@ -27,9 +27,33 @@ prometheus-k8s-0                       3/3       Running   1          2h
 prometheus-k8s-1                       3/3       Running   1          2h
 prometheus-operator-7d9fd546c4-m8t7v   1/1       Running   0          2h
 ```
+**NOTE:** It may be preferable to expose the Prometheus and Grafana pods via NodePorts. To do so, the prometheus-service.yaml and grafana-service.yaml files will need to be modified as follows;
 
-Expose prom-k8s and grafana as node port. 
-ADD: prom-k8s targets page
+
+<details>
+<summary>prometheus-service.yaml</summary>
+<br>
+```
+  ADD
+  ADD
+  ADD
+```
+To apply these changes into the kubernetes cluseter run: ```kubectl apply -f prometheus-service.yaml```
+
+</details>
+
+<details>
+<summary>grafana-service.yaml</summary>
+<br>
+```
+  ADD
+  ADD
+  ADD
+```
+To apply these changes into the kubernetes cluseter run: ```kubectl apply -f grafana-service.yaml```
+
+</details>
+
 
 
 Configuring Netscaler Metrics Exporter
