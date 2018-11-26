@@ -1,4 +1,4 @@
-Monitoring Citrix Ingress Controller and CPX-EW using NetScaler Metrics Exporter and Prometheus Operator
+Monitoring CPX/VPX Ingress and CPX-EW using NetScaler Metrics Exporter and Prometheus Operator
 ===
 
 This document describes how the [NetScaler Metrics Exporter](https://github.com/citrix/netscaler-metrics-exporter) and [Prometheus-Operator](https://github.com/coreos/prometheus-operator) can be used to monitor VPX/CPX ingress devices and CPX-EW devices.
