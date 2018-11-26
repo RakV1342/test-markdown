@@ -35,9 +35,23 @@ prometheus-operator-7d9fd546c4-m8t7v   1/1       Running   0          2h
 <br>
 
 ```
-  ADD
-  ADD
-  ADD
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    prometheus: k8s
+  name: prometheus-k8s
+  namespace: monitoring
+spec:
+  type: NodePort
+  ports:
+  - name: web
+    port: 9090
+    nodePort: 30100
+    targetPort: web
+  selector:
+    app: prometheus
+    prometheus: k8s
 ```
 To apply these changes into the kubernetes cluseter run: ```kubectl apply -f prometheus-service.yaml```.
 
@@ -49,9 +63,20 @@ To apply these changes into the kubernetes cluseter run: ```kubectl apply -f pro
 <br>
 
 ```
-  ADD
-  ADD
-  ADD
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 3000
+    nodePort: 30300
+    targetPort: http
+  selector:
+    app: grafana
 ```
 To apply these changes into the kubernetes cluseter run: ```kubectl apply -f grafana-service.yaml```.
 
@@ -75,7 +100,7 @@ kind: Pod
 metadata:
   name: exporter-vpx-ingress
   labels:
-    name: exporter-vpx-ingress
+    app: exporter-vpx-ingress
 spec:
   containers:
     - name: exporter
@@ -114,16 +139,16 @@ kind: Deployment
 metadata:
   name: cpx-ingress
   labels:
-    name: cpx-ingress
+    app: cpx-ingress
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: cpx-ingress
+      app: cpx-ingress
   template:
     metadata:
       labels:
-        name: cpx-ingress
+        app: cpx-ingress
       annotations:
         NETSCALER_AS_APP: "True"
     spec:
@@ -151,9 +176,6 @@ spec:
             #Define ADM License type here (Using vCPU License)
             - name: "PLATFORM"
               value: "CP1000"
-          args:
-            - --ingress-classes
-              kibana
           ports:
             - name: http
               containerPort: 80
@@ -179,7 +201,7 @@ metadata:
     service-type: citrix-adc-monitor
 spec:
   selector:
-    name: cpx-ingress
+    app: cpx-ingress
   ports:
     - name: exporter-port
       port: 8888
@@ -193,18 +215,19 @@ Here, the exporter uses the ```192.0.0.2``` local IP to fetch metrics from the C
 <details>
 <summary>CPX-EW Dvice</summary>
 <br>
+
 To monitor a CPX-EW (east-west) device, the exporter is added as a side-car. An example yaml file of a CPX-EW device with an exporter as a side car is given below;
 ```
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: cpx
+  name: cpx-ew
 spec:
   template:
     metadata:
-      name: cpx
+      name: cpx-ew
       labels:
-        app: cpx-daemon
+        app: cpx-ew
       annotations:
         NETSCALER_AS_APP: "True"
     spec:
