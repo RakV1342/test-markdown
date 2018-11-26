@@ -6,12 +6,12 @@ This document describes how the [NetScaler Metrics Exporter](https://github.com/
 
 Launching Promethus-Operator
 ---
-Prometheus Operator has an expansive method of monitoring services on Kubernetes. To get started quickly, this guide uses [kube-prometheus](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus) and its [manifest files](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus/manifests).
+Prometheus Operator has an expansive method of monitoring services on Kubernetes. To get started quickly, this guide uses [kube-prometheus](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus) and its [manifest](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus/manifests) files.
 The manifest files help deploy a basic working model of Prometheus Operator with a simple quick command;
 ```
 kubectl create -f prometheus-operator/contrib/kube-prometheus/manifests/
 ```
-This creates several pods and services, of which ```prometheus-k8s-xx``` pods are for metrics aggregation and timestamping and ```grafana``` pods for visualization. An output similar to this should be seen;
+This creates several pods and services, of which ```prometheus-k8s-xx``` pods are for metrics aggregation and timestamping and ```grafana``` pods are for visualization. An output similar to this should be seen;
 ```
 $ kubectl get pods -n monitoring
 NAME                                   READY     STATUS    RESTARTS   AGE
@@ -73,32 +73,31 @@ To monitor an ingress VPX device, the netscaler-metrics-exporter will be run as 
 apiVersion: v1
 kind: Pod
 metadata:
-  name: exp
+  name: exporter-vpx-ingress
   labels:
-    app: exp
+    name: exporter-vpx-ingress
 spec:
   containers:
-    - name: exp
-      image: ns-exporter:v1
+    - name: exporter
+      image: "quay.io/citrix/netscaler-metrics-exporter:v1.0.0"
+            imagePullPolicy: IfNotPresent
       args:
         - "--target-nsip=<IP_and_port_of_VPX>"
         - "--port=8888"
-      imagePullPolicy: IfNotPresent
 ---
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
-  name: exp
+  name: exporter-vpx-ingress
   labels:
-    app: exp
+    service-type: citrix-adc-monitor
 spec:
-  type: ClusterIP
-  ports:
-  - port: 8888
-    targetPort: 8888
-    name: exp-port
   selector:
-    app: exp
+    name: exporter-vpx-ingress
+  ports:
+    - name: exporter-port
+      port: 8888
+      targetPort: 8888
 ```
 The IP and port of the VPX device needs to be filled in as the ```--target-nsip``` (Eg. ```--target-nsip=10.0.0.20```). 
 </details>
@@ -109,6 +108,7 @@ The IP and port of the VPX device needs to be filled in as the ```--target-nsip`
   
 To monitor a CPX ingress device, the exporter is added as a side-car. An example yaml file of a CPX ingress device with an exporter as a side car is given below;
 ```
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -130,7 +130,8 @@ spec:
       serviceAccountName: cpx
       containers:
         - name: cpx-ingress
-          image: "us.gcr.io/citrix-217108/citrix-k8s-cpx-ingress:latest"
+          image: "in-docker-reg.eng.citrite.net/cpx-dev/cpx-cic:12.1-48.119"
+          imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
           env:
@@ -141,6 +142,18 @@ spec:
             #Define the NITRO port here
             - name: "NS_PORT"
               value: "9080"
+            #Define ADM License Server here
+            - name: "LS_IP"
+              value: "10.106.134.107"
+            #Define ADM License Server Port here
+            - name: "LS_PORT"
+              value: "27000"
+            #Define ADM License type here (Using vCPU License)
+            - name: "PLATFORM"
+              value: "CP1000"
+          args:
+            - --ingress-classes
+              kibana
           ports:
             - name: http
               containerPort: 80
@@ -150,32 +163,25 @@ spec:
               containerPort: 9080
             - name: nitro-https
               containerPort: 9443
-        # Add exporter as a sidecar
+        # Adding exporter as a side-car
         - name: exporter
-          image: ns-exporter:v1
+          image: "quay.io/citrix/netscaler-metrics-exporter:v1.0.0"
+          imagePullPolicy: IfNotPresent
           args:
-            - "--target-nsip=192.0.0.2:80"
+            - "--target-nsip=192.0.0.2"
             - "--port=8888"
-          imagePullPolicy: IfNotPresent      
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: cpx-ingress
+  name: exporter-cpx-ingress
   labels:
-    name: cpx-ingress
+    service-type: citrix-adc-monitor
 spec:
   selector:
     name: cpx-ingress
   ports:
-    - name: http
-      port: 80
-      targetPort: http
-    - name: https
-      port: 443
-      targetPort: https
-    # Expose exporter as a k8s service
-    - name: exp-port
+    - name: exporter-port
       port: 8888
       targetPort: 8888
 ```
@@ -249,24 +255,26 @@ Service Monitors to Detect Netscaler Devices
 ---
 The netscaler metrics exporters helps collect data from the VPX/CPX ingress and CPX-EW devices. This exporters needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana. Prometheus Operator uses the concept of ```ServiceMonitors``` to detect pods belonging to a service, using the labels attached to that service. 
 
-The following example yaml file will detect all the exporter services (given in the example yaml files above) which have the label ```service: citrix-adc``` associated with them. 
+The following example yaml file will detect all the exporter services (given in the example yaml files above) which have the label ```service-type: citrix-adc-monitor``` associated with them. 
 
 ```
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  name: citrix-adc-servicemonitor
   labels:
-    k8s-app: rak-app
-  name: rak-app
-  namespace: monitoring
+    servicemonitor: citrix-adc
 spec:
   endpoints:
   - interval: 30s
-    port: exp-port
-  jobLabel: k8s-app
+    port: exporter-port
   selector:
     matchLabels:
-      k8s-app: rak-app
+      service-type: citrix-adc-monitor
+  namespaceSelector:
+    matchNames:
+    - monitoring
+    - default
 ```
 
 
