@@ -247,13 +247,9 @@ Here, the exporter uses the ```192.168.0.2``` local IP to fetch metrics from the
 
 Service Monitors to Detect Netscaler Devices
 ---
-The exporter added in the above steps helps collect data from the VPX/CPX ingress and CPX-EW devices. This exporter needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana. Prometheus Operator uses the concept of Service Monitors to automatically detect pods belonging to a service using the labels attached to that service. 
+The netscaler metrics exporters helps collect data from the VPX/CPX ingress and CPX-EW devices. This exporters needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana. Prometheus Operator uses the concept of ```ServiceMonitors``` to detect pods belonging to a service, using the labels attached to that service. 
 
-The following example yaml file will detect all exporter services (given in the example yaml files above) which have the label citrix-adc associated with them. 
-
-<details>
-<summary>Service Monitor</summary>
-<br>
+The following example yaml file will detect all the exporter services (given in the example yaml files above) which have the label ```service: citrix-adc``` associated with them. 
 
 ```
 apiVersion: monitoring.coreos.com/v1
@@ -272,9 +268,6 @@ spec:
     matchLabels:
       k8s-app: rak-app
 ```
-
-</details>
-
 
 
 Verification
