@@ -300,14 +300,14 @@ spec:
 
 Verification
 ---
-Prometheus Operator will take a few minutes to detect the presence of the netscaler-metrics-exporter. After 3-5 minutes, it should appear in the ```Targets``` page;
+Describe:::: Prometheus Operator will take a few minutes to detect the presence of the netscaler-metrics-exporter. After 3-5 minutes, it should appear in the ```Targets``` page;
 <ADD>
   
 ![image](https://user-images.githubusercontent.com/39149385/49031498-1ace0100-f1d0-11e8-90c1-c4d0589819cc.png)
 
 
-Now metrics being collected from CPX by netscaler-metrics-exporter will be visible on Grafana as well.
-<ADD>
+Describe:::: Now metrics being collected from CPX by netscaler-metrics-exporter will be visible on Grafana as well.
+![image](https://user-images.githubusercontent.com/39149385/49031958-60d79480-f1d1-11e8-9cde-7fa26647f751.png)
 
 
 
