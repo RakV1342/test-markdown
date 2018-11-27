@@ -303,6 +303,7 @@ Visualization of Metrics
 ---
 The NetScaler instances which were detected for monitoring will appear in the ```Targets``` page of the prometheus container. It canbe accessed using ```http://<k8s_cluster_ip>:<prometheus_nodeport>/targets``` and will look similar to the screenshot below
 
+
 ![image](https://user-images.githubusercontent.com/39149385/49031498-1ace0100-f1d0-11e8-90c1-c4d0589819cc.png)
 
 To view the metrics graphically,
