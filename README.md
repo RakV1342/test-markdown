@@ -9,6 +9,7 @@ Launching Promethus-Operator
 Prometheus Operator has an expansive method of monitoring services on Kubernetes. To get started quickly, this guide uses [kube-prometheus](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus) and its [manifest](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus/manifests) files.
 The manifest files help deploy a basic working model of Prometheus Operator with a simple quick command;
 ```
+git clone https://github.com/coreos/prometheus-operator.git
 kubectl create -f prometheus-operator/contrib/kube-prometheus/manifests/
 ```
 This creates several pods and services, of which ```prometheus-k8s-xx``` pods are for metrics aggregation and timestamping and ```grafana``` pods are for visualization. An output similar to this should be seen;
@@ -300,15 +301,19 @@ spec:
 
 Visualization of Metrics
 ---
-Describe:::: Prometheus Operator will take a few minutes to detect the presence of the netscaler-metrics-exporter. After 3-5 minutes, it should appear in the ```Targets``` page; Should be something like this.
-<ADD>
-  
+The NetScaler instances which were detected for monitoring will appear in the ```Targets``` page of the prometheus container. It canbe accessed using ```http://<k8s_cluster_ip>:<prometheus_nodeport>/targets``` and will look similar to the screenshot below
 ![image](https://user-images.githubusercontent.com/39149385/49031498-1ace0100-f1d0-11e8-90c1-c4d0589819cc.png)
 
+To view the metrics graphically,
+1. Log into grafana using ```http://<k8s_cluster_ip>:<grafafa_nodeport>``` with default credentials ```admin:admin```
 
-Describe:::: Now metrics being collected from CPX by netscaler-metrics-exporter will be visible on Grafana as well.....typing NS_ will bring list. Select any to monitor. To add more stats refer metrics exp link. Can also use the json file provided there give link to json and how to add json file
-![image](https://user-images.githubusercontent.com/39149385/49031958-60d79480-f1d1-11e8-9cde-7fa26647f751.png)
+2. Import the [sample grafana dashboard](https://github.com/citrix/netscaler-metrics-exporter/blob/master/sample_grafana_dashboard.json) json file as per [these steps](https://github.com/citrix/netscaler-metrics-exporter#prometheus-and-grafana-integration) in the netscaler metrics exporter page
 
+3. A dashboard containing graphs similar to the following should appear
+
+![image](https://user-images.githubusercontent.com/39149385/49060067-f30f8500-f231-11e8-8c94-4be78fa6948a.png)
+
+4. The dashboard can be further enhanced using Grafana's [documentation](http://docs.grafana.org/) or demo [videos](https://www.youtube.com/watch?v=mgcJPREl3CU).
 
 
 
