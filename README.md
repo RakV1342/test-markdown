@@ -7,7 +7,7 @@ This document describes how the [NetScaler Metrics Exporter](https://github.com/
 Launching Promethus-Operator
 ---
 Prometheus Operator has an expansive method of monitoring services on Kubernetes. To get started quickly, this guide uses [kube-prometheus](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus) and its [manifest](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus/manifests) files.
-The manifest files help deploy a basic working model of Prometheus Operator with a simple quick command;
+The manifest files help deploy a basic working model;
 ```
 git clone https://github.com/coreos/prometheus-operator.git
 kubectl create -f prometheus-operator/contrib/kube-prometheus/manifests/
@@ -274,7 +274,7 @@ Here, the exporter uses the ```192.168.0.2``` local IP to fetch metrics from the
 
 Service Monitors to Detect Netscalers
 ---
-The netscaler metrics exporters helps collect data from the VPX/CPX ingress and CPX-EW devices. This exporters needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana. Prometheus Operator uses the concept of ```ServiceMonitors``` to detect pods belonging to a service, using the labels attached to that service. 
+The netscaler metrics exporters helps collect data from the VPX/CPX ingress and CPX-EW devices. These exporters needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana. Prometheus Operator uses the concept of ```ServiceMonitors``` to detect pods belonging to a service, using the labels attached to that service. 
 
 The following example yaml file will detect all the exporter services (given in the example yaml files above) which have the label ```service-type: citrix-adc-monitor``` associated with them. 
 
@@ -302,12 +302,13 @@ spec:
 Visualization of Metrics
 ---
 The NetScaler instances which were detected for monitoring will appear in the ```Targets``` page of the prometheus container. It canbe accessed using ```http://<k8s_cluster_ip>:<prometheus_nodeport>/targets``` and will look similar to the screenshot below
+
 ![image](https://user-images.githubusercontent.com/39149385/49031498-1ace0100-f1d0-11e8-90c1-c4d0589819cc.png)
 
 To view the metrics graphically,
 1. Log into grafana using ```http://<k8s_cluster_ip>:<grafafa_nodeport>``` with default credentials ```admin:admin```
 
-2. Import the [sample grafana dashboard](https://github.com/citrix/netscaler-metrics-exporter/blob/master/sample_grafana_dashboard.json) json file as per [these steps](https://github.com/citrix/netscaler-metrics-exporter#prometheus-and-grafana-integration) in the netscaler metrics exporter page
+2. Import the [sample grafana dashboard](https://github.com/citrix/netscaler-metrics-exporter/blob/master/sample_grafana_dashboard.json) by selecting the ```+``` icon on the left panel and clicking import.
 
 3. A dashboard containing graphs similar to the following should appear
 
