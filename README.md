@@ -310,6 +310,9 @@ To view the metrics graphically,
 
 2. Import the [sample grafana dashboard](https://github.com/citrix/netscaler-metrics-exporter/blob/master/sample_grafana_dashboard.json) by selecting the ```+``` icon on the left panel and clicking import.
 
+<img src="https://user-images.githubusercontent.com/39149385/47292375-5e0ee000-d624-11e8-9410-77d46417e358.png" width="200">
+
+
 3. A dashboard containing graphs similar to the following should appear
 
 ![image](https://user-images.githubusercontent.com/39149385/49060067-f30f8500-f231-11e8-8c94-4be78fa6948a.png)
