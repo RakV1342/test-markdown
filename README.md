@@ -11,9 +11,13 @@ The broad steps of this project are:
 
 [//]: # (Image References)
 
-[image1]: ./images/ ""
-[image2]: ./images/ ""
-[image3]: ./images/ ""
+[image1]: ./images/dataset.png "Dataset"
+[image2]: ./images/camera_angles_left.jpg "Camera Left"
+[image3]: ./images/camera_angles_center.jpg "Camera Center"
+[image4]: ./images/camera_angles_right.jpg "Camera Right"
+[image5]: ./images/crop_orig.jpg "Original Image"
+[image6]: ./images/crop_cropped.jpg "Cropped Image"
+
 
 Data Collection
 ---
@@ -37,7 +41,7 @@ Image of the csv file holding the camera image locations and the corresponding s
 For each of the images captured from within the car, there were two other camera angles that were recorded. One that was placed slightly to the right and the other that was positioned slightly to the left. Taking such images helped in two ways - They helped provide driving data for the car in the case it was slightly off centered and also helped provide a more generalized dataset. Thus, based on the former reasoning, it helped the car recenter itself when offset slightly from the center, and by the latter reasoning it ensured lesser chances of overfitting.
 
 The left, center and right camera angles for the same point in the track are shown below:
-![alt text][image1] ![alt text][image1] ![alt text][image1] 
+![alt text][imager2] ![alt text][image3] ![alt text][image4] 
 
 
 #### iii. Augmented Images
@@ -58,7 +62,7 @@ As most datasets, this dataset also consisted of a couple of pre-processing step
 
 The original and cropped image is shown below:
 
-![alt text][image1] ![alt text][image1] 
+![alt text][image5] ![alt text][image6] 
 
 #### ii. Network 1 [ Single Layer NN/Perceptron -- Failed ]
 
@@ -157,9 +161,11 @@ The previous section discussed how the model was trained, tested and finally arr
 
 #### i. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-** Performance on Track1 (Trained on Track1)**
+**Performance on Track1 (Trained on Track1)**
+Video available at: ```./videos/MultiNN_track1.mp4```
 
-** Performance on Track2 (Trained only on Track1)**
+**Performance on Track2 (Trained only on Track1)**
+Video available at: ```./videos/MultiNN_track2.mp4```
 
 
 ** Observations and Intuitions:**
@@ -169,23 +175,11 @@ The previous section discussed how the model was trained, tested and finally arr
 
 #### i. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-** Performance on Track1 (Trained on Track1)**
+**Performance on Track1 (Trained on Track1)**
+Video available at: ```./videos/.CNN_track1.mp4```
 
 
 ** Observations and Intuitions:**
->>>>>>> EDIT AS NEEDED:::
-* This model succeeded in navigating both track1 and track2 despite being trained only on track1. It was however slighlty shaky on track1 and highly oscillatory on track2. 
-* The network was able to learn about the left and right road margins and navigated sufficiently well to stay within their bounds. 
-* Thus, on track2 it was able to stay on the road by merely identifying the road boundaries/edges. To ensure that the car stayed on one side of the road on track2, the network will need to be trained on track2 as well such that it is shown how to stay on one side of the road. This would require quite a lot of tweaking, retraining and possibly may not be do-able with just a multi-layer neural network. A more complex archetecture like a CNN might need to be used.
+* This model succeeded in navigating track1 in a very smooth manner.
+* To make it work well with track2, it will need to be fed data from track2 as well.
 
-
-
-https://github.com/etianen/html5media/wiki/embedding-video
-https://github.com/etianen/html5media/wiki/embedding-video
-https://github.com/etianen/html5media/wiki/embedding-video
-
-
-
-### Video:
-
-<video src="tmp_net_Multi_track2.mp4" poster="placeholder_small.png" width="320" height="160" controls preload></video>
