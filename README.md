@@ -30,7 +30,7 @@ Data Collection
 The First step would be to collect good training data. For the purpose of this project the data is camera images taken along the length of the track using the camera within the car. There were two ways in which I drove the car while collecting data:
 
 * One was the straightforward and ideal scenario, wherein I ensured the car was centered on the road and maintained a good steering angle throughout the track
-* The second was that of corrective drining. Here I would position the car such that it was severely off-centered on the road. From this edge/side position I would press the record button and recenter the car. A camera image taken from the car when it was highly offcentered on purpose is given below:
+* The second was that of corrective drining. Here I would position the car such that it was severely off-centered on the road. From this edge/side position I would press the record button and recenter the car. A camera image taken from the car when it was highly offcentered on purpose (to train it for correction) is given below:
 
 
 ![alt text][image7] 
@@ -38,7 +38,7 @@ The First step would be to collect good training data. For the purpose of this p
 
 Steering angles associated with each image were already in the normalized range of [-1, +1].
 
-Image of the csv file holding the camera image locations and the corresponding steering angle is provided below:
+A sample of the csv file holding the camera image locations and the corresponding steering angle is provided below:
 
 ![alt text][image1]
 
@@ -96,7 +96,7 @@ The reason for the sudden off roading seemed to arise from the surrounding noise
 
 #### iii. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-This network was applied on the normalized and cropped (this time 70 pixels from the top and 25 pixels from the bottom) images. To add a little more scope for learning into the network, I added a few layers of fully connected layers. Thus the network took on the following shape:
+This network was applied on the normalized and cropped (this time ```70 pixels``` from the top and ```25 pixels``` from the bottom) images. To add a little more scope for learning into the network, I added a few layers of fully connected layers. Thus the network took on the following shape:
 
 ```
 # MultiLayer NN
@@ -114,7 +114,7 @@ This network was trained for ```10 EPOCHS``` again, and it performed quite well.
 
 To improve it, I included the augmented dataset of left and right camera images. To each of these images I added a steering bias, such that the car would be taught to turn slightly more to the right for images taken from the left camera and vice-versa. Inclusion of this set helped the car navigate all the way till the bridge!
 
-The next change I made to the model was altering the number of EPOCHS and turning bias. Now I used ```2``` EPOCHS and used a small steering bias. I also changed the batch size to ```64```. To my surprise, this ensured the car navigated the entire path. It was even able to navigate the entire path within Track2 without driving off or falling off the road despite being trained only on track1!
+The next change I made to the model was altering the number of EPOCHS and turning bias. I also included the data collected from the manual "correction drive" that I had perfomed. Finally, I used ```2``` EPOCHS, used a small steering bias and also changed the batch size to ```64```. To my surprise, this ensured the car navigated the entire path. It was even able to navigate the entire path within Track2 without driving off or falling off the road despite being trained only on track1!
 
 
 The car was still mildly oscillatory. To address this, I tried different sizes of hidden layers. However this did not seem to have much more of an effect. Thus I began working on Network 3.
@@ -131,7 +131,7 @@ The goal of implementing this network was to get the car to behave more smoothly
 * Size of Fully Connected Layers
 
 
-Finally, after a lot of testing and tweaking, I was able to train a satisfactory network with the following architecture:
+The entire augemnted dataset (Original Center images + Reflected Center Inages + Left/Right Images with Steering Bias + Reflected Left/Right Images + Corrective dataset of images[which itself had left/center/right images and their reflections]) was used to train this network. Finally, after a lot of testing and tweaking, I was able to train a satisfactory network with the following architecture:
 
 ```
 # CNN
@@ -169,13 +169,9 @@ The previous section discussed how the model was trained, tested and finally arr
 
 #### i. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-**Track1 (Trained on Track1)** 
+* **Track1 (Trained on Track1): ** Video available at: ```./videos/MultiNN_track1.mp4```
 
-Video available at: ```./videos/MultiNN_track1.mp4```
-
-**Track2 (Trained only on Track1)** 
-
-Video available at: ```./videos/MultiNN_track2.mp4```
+* **Track2 (Trained only on Track1): ** Video available at: ```./videos/MultiNN_track2.mp4```
 
 
 **Observations and Intuitions:**
@@ -185,9 +181,7 @@ Video available at: ```./videos/MultiNN_track2.mp4```
 
 #### ii. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-**Track1 (Trained on Track1)** 
-
-Video available at: ```./videos/.CNN_track1.mp4```
+* **Track1 (Trained on Track1): ** Video available at: ```./videos/.CNN_track1.mp4```
 
 
 **Observations and Intuitions:**
