@@ -1,324 +1,191 @@
-Monitoring NetScaler Appliances in Kubernetes
-===
+# Behavioral Cloning Project
 
-This document describes how the [NetScaler Metrics Exporter](https://github.com/citrix/netscaler-metrics-exporter) and [Prometheus-Operator](https://github.com/coreos/prometheus-operator) can be used to monitor VPX/CPX ingress devices and CPX-EW (east-west) devices.
-
-
-Launching Promethus-Operator
+Overview
 ---
-Prometheus Operator has an expansive method of monitoring services on Kubernetes. To get started quickly, this guide uses [kube-prometheus](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus) and its [manifest](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus/manifests) files.
-The manifest files help deploy a basic working model;
-```
-git clone https://github.com/coreos/prometheus-operator.git
-kubectl create -f prometheus-operator/contrib/kube-prometheus/manifests/
-```
-This creates several pods and services, of which ```prometheus-k8s-xx``` pods are for metrics aggregation and timestamping and ```grafana``` pods are for visualization. An output similar to this should be seen;
-```
-$ kubectl get pods -n monitoring
-NAME                                   READY     STATUS    RESTARTS   AGE
-alertmanager-main-0                    2/2       Running   0          2h
-alertmanager-main-1                    2/2       Running   0          2h
-alertmanager-main-2                    2/2       Running   0          2h
-grafana-5b68464b84-5fvxq               1/1       Running   0          2h
-kube-state-metrics-6588b6b755-d6ftg    4/4       Running   0          2h
-node-exporter-4hbcp                    2/2       Running   0          2h
-node-exporter-kn9dg                    2/2       Running   0          2h
-node-exporter-tpxhp                    2/2       Running   0          2h
-prometheus-k8s-0                       3/3       Running   1          2h
-prometheus-k8s-1                       3/3       Running   1          2h
-prometheus-operator-7d9fd546c4-m8t7v   1/1       Running   0          2h
-```
-**NOTE:** It may be preferable to expose the Prometheus and Grafana pods via NodePorts. To do so, the prometheus-service.yaml and grafana-service.yaml files will need to be modified as follows;
+The broad steps of this project are:
+
+* Using the simulator to collect data of good driving behavior 
+* Designing, training and validating a model that predicts a steering angle from image data
+* Using the model to drive the vehicle autonomously around the first track in the simulator.
 
 
-<details>
-<summary>prometheus-service.yaml</summary>
-<br>
+[//]: # (Image References)
 
-```
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    prometheus: k8s
-  name: prometheus-k8s
-  namespace: monitoring
-spec:
-  type: NodePort
-  ports:
-  - name: web
-    port: 9090
-    targetPort: web
-  selector:
-    app: prometheus
-    prometheus: k8s
-```
-To apply these changes into the kubernetes cluseter run: ```kubectl apply -f prometheus-service.yaml```.
+[image1]: ./images/ ""
+[image2]: ./images/ ""
+[image3]: ./images/ ""
 
-</details>
-
-
-<details>
-<summary>grafana-service.yaml</summary>
-<br>
-
-```
-apiVersion: v1
-kind: Service
-metadata:
-  name: grafana
-  namespace: monitoring
-spec:
-  type: NodePort
-  ports:
-  - name: http
-    port: 3000
-    targetPort: http
-  selector:
-    app: grafana
-```
-To apply these changes into the kubernetes cluseter run: ```kubectl apply -f grafana-service.yaml```.
-
-</details>
-
-
-
-Configuring Netscaler Metrics Exporter
+Data Collection
 ---
-This section describes how to integrate the Netscaler Metrics Exporter with the VPX/CPX ingress or CPX-EW devices. 
 
-<details>
-<summary>VPX Ingress Device</summary>
-<br>
+#### i. Two Types of Driving Data
 
-To monitor an ingress VPX device, the netscaler-metrics-exporter will be run as a pod within the kubernetes cluster. The IP of the VPX ingress device will be provided as an argument to the exporter. An example yaml file to deploy such an exporter is given below;
+The First step would be to collect good training data. For the purpose of this project the data is camera images taken along the length of the track using the camera within the car. There were two ways in which I drove the car while collecting data:
 
-```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: exporter-vpx-ingress
-  labels:
-    app: exporter-vpx-ingress
-spec:
-  containers:
-    - name: exporter
-      image: "quay.io/citrix/netscaler-metrics-exporter:v1.0.0"
-            imagePullPolicy: IfNotPresent
-      args:
-        - "--target-nsip=<IP_and_port_of_VPX>"
-        - "--port=8888"
+* One was the straightforward and ideal scenario, wherein I ensured the car was centered on the road and maintained a good steering angle throughout the track
+* The second was that of corrective drining. Here I would position the car such that it was severely off-centered on the road. From this edge/side position I would press the record button and recenter the car. 
+
+Steering angles associated with each image were already in the normalized range of [-1, +1].
+
+Image of the csv file holding the camera image locations and the corresponding steering angle is provided below:
+
+![alt text][image1]
+
+
+#### ii. Right and Left Camera Angles
+
+For each of the images captured from within the car, there were two other camera angles that were recorded. One that was placed slightly to the right and the other that was positioned slightly to the left. Taking such images helped in two ways - They helped provide driving data for the car in the case it was slightly off centered and also helped provide a more generalized dataset. Thus, based on the former reasoning, it helped the car recenter itself when offset slightly from the center, and by the latter reasoning it ensured lesser chances of overfitting.
+
+The left, center and right camera angles for the same point in the track are shown below:
+![alt text][image1] ![alt text][image1] ![alt text][image1] 
+
+
+#### iii. Augmented Images
+
+The track mainly consisted of left turns and only one major right turn existed. To ensure the model generalizes well, all the images that were collected were reflected and augmented to the original dataset. The steering angle associated with such reflected images was the negated value of the original value.
+
+
+Network Design and Training
 ---
-kind: Service
-apiVersion: v1
-metadata:
-  name: exporter-vpx-ingress
-  labels:
-    service-type: citrix-adc-monitor
-spec:
-  selector:
-    name: exporter-vpx-ingress
-  ports:
-    - name: exporter-port
-      port: 8888
-      targetPort: 8888
-```
-The IP and port of the VPX device needs to be filled in as the ```--target-nsip``` (Eg. ```--target-nsip=10.0.0.20```). 
-</details>
 
-<details>
-<summary>CPX Ingress Device</summary>
-<br>
+#### i. Pre-processing
+
+As most datasets, this dataset also consisted of a couple of pre-processing steps:
+
+* First, the images were normalized to ensure zero means. This was done in keras using a ```Lambda layer```. 
+
+* Then, the images were cropped to ensure most of the surroundings were cropped out and the main object within the image was the road. This was done to ensure the network did not learn wrong details picked up from surrounding objects. For this, the ```Cropping2D layer``` was used.
+
+The original and cropped image is shown below:
+
+![alt text][image1] ![alt text][image1] 
+
+#### ii. Network 1 [ Single Layer NN/Perceptron -- Failed ]
+
+I wanted to start simple and build layers and complexity into the network gradually. The first "netowork" that I tried was a simply a single layer perceptron using the ```Flatten()``` fuction. 
+
+```
+# Single Layer  NN
+model.add( Lambda(lambda x: x/255 - 0.5, input_shape=[160,320,3]) )
+model.add( Cropping2D( ((60, 20), (0,0)) ) )
+model.add(Flatten())
+model.add(Dense(1))
+```
+
+Since the output required was a single number (the steering angle), an output layer of ```Dense(1)``` was used. I continued to use the Adam optimizer here as well (as I did from previous projects). The loss function was set to use the MSE (mean square error). This network was applied on the normalized images. Around ```10 EPOCHS``` were used while training the network. A batch size of 128 images was used.
+
+
+It was seen that the car showed some signs of attempting to stay on the road. There were constant steering adjustments. After a short distance however the car would go off the road. 
+
+
+The reason for the sudden off roading seemed to arise from the surrounding noise in the images caused by the trees and bushes. Thus, I added a Lambda layer to crop off ```60 pixels``` from the top and ```20 pixels``` off the bottom. This prevented the car from suddenly turing off the road at the previous point of failure, and helped it make slow and highly oscillatory progress till the first turn. 
+
+
+#### iii. Network 2 [ Multi-Layer NN -- Succeeded ]
+
+This network was applied on the normalized and cropped (this time 70 pixels from the top and 25 pixels from the bottom) images. To add a little more scope for learning into the network, I added a few layers of fully connected layers. Thus the network took on the following shape:
+
+```
+# MultiLayer NN
+model.add( Lambda(lambda x: x/255 - 0.5, input_shape=[160,320,3]) )
+model.add( Cropping2D( ((70, 25), (0,0)) ) )
+model.add(Flatten())
+model.add(Dense(25))
+model.add(Dense(25))
+model.add(Dense(25))
+model.add(Dense(1))
+```
+
+This network was trained for ```10 EPOCHS``` again, and it performed quite well. It ensured the car almost navigated around the first turn.
+
+
+To improve it, I included the augmented dataset of left and right camera images. To each of these images I added a steering bias, such that the car would be taught to turn slightly more to the right for images taken from the left camera and vice-versa. Inclusion of this set helped the car navigate all the way till the bridge!
+
+
+The next change I made to the model was altering the number of EPOCHS and turning bias. Now I used ```2``` EPOCHS and used a small steering bias. I also changed the batch size to ```64```. To my surprise, this ensured the car navigated the entire path. It was even able to navigate the entire path within Track2 without driving off or falling off the road despite being trained only on track1!
+
+
+The car was still mildly oscillatory. To address this, I tried different sizes of hidden layers. However this did not seem to have much more of an effect. Thus I began working on Network 3.
+
+
+#### iv. Network 3 [ Convolution NN -- Succeeded, smoother]
+
+The goal of implementing this network was to get the car to behave more smoothly around the track. Although I could have referred to other network architectures designed say by Nvidia for the purpose of a self driving car, I wanted to develop a CNN from scratch. It involved playing around with a different number of parameters:
+
+* The number of convolution layers
+* The dimensions of the path/kernel
+* Dropout rate
+* Number of Fully Connected Layers
+* Size of Fully Connected Layers
+
+
+Finally, after a lot of testing and tweaking, I was able to train a satisfactory network with the following architecture:
+
+```
+# CNN
+model.add( Lambda(lambda x: x/255 - 0.5, input_shape=[160,320,3]) )  # Dims: 160 x 320 x 3
+model.add( Cropping2D( ((70, 25), (0,0)) ) )  # Dims: 65 x 320 x 3
+
+model.add(Conv2D(6, (9,19), padding='valid', strides=1))  # Dims: 57 x 300 x 6
+model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))  # Dims: 28 x 150 x 6
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+
+model.add(Conv2D(16, (4,4), padding='valid', strides=1))  # Dims: 25 x 74 x 16
+model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))  # Dims: 12 x 37 x 16
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+
+model.add(Conv2D(32, (3,3), padding='valid', strides=1))  # Dims: 10 x 72 x 32
+model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))  # Dims: 5 x 36 x 32
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+
+model.add(Flatten())
+model.add(Dense(5))
+model.add(Dense(1))
+```
   
-To monitor a CPX ingress device, the exporter is added as a side-car. An example yaml file of a CPX ingress device with an exporter as a side car is given below;
-```
+It required 2 EPOCHS to train and a batch size of ```32``` was used. The turning bias was increased slightly for this model.
+
+
+Results: Autonomous Driving
 ---
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: cpx-ingress
-  labels:
-    app: cpx-ingress
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: cpx-ingress
-  template:
-    metadata:
-      labels:
-        app: cpx-ingress
-      annotations:
-        NETSCALER_AS_APP: "True"
-    spec:
-      serviceAccountName: cpx
-      containers:
-        - name: cpx-ingress
-          image: "in-docker-reg.eng.citrite.net/cpx-dev/cpx-cic:12.1-48.119"
-          imagePullPolicy: IfNotPresent
-          securityContext:
-            privileged: true
-          env:
-            - name: "EULA"
-              value: "YES"
-            - name: "NS_PROTOCOL"
-              value: "HTTP"
-            #Define the NITRO port here
-            - name: "NS_PORT"
-              value: "9080"
-            #Define ADM License Server here
-            - name: "LS_IP"
-              value: "10.106.134.107"
-            #Define ADM License Server Port here
-            - name: "LS_PORT"
-              value: "27000"
-            #Define ADM License type here (Using vCPU License)
-            - name: "PLATFORM"
-              value: "CP1000"
-          ports:
-            - name: http
-              containerPort: 80
-            - name: https
-              containerPort: 443
-            - name: nitro-http
-              containerPort: 9080
-            - name: nitro-https
-              containerPort: 9443
-        # Adding exporter as a side-car
-        - name: exporter
-          image: "quay.io/citrix/netscaler-metrics-exporter:v1.0.0"
-          imagePullPolicy: IfNotPresent
-          args:
-            - "--target-nsip=192.0.0.2"
-            - "--port=8888"
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: exporter-cpx-ingress
-  labels:
-    service-type: citrix-adc-monitor
-spec:
-  selector:
-    app: cpx-ingress
-  ports:
-    - name: exporter-port
-      port: 8888
-      targetPort: 8888
-```
-Here, the exporter uses the ```192.0.0.2``` local IP to fetch metrics from the CPX.
 
-</details>
+The previous section discussed how the model was trained, tested and finally arrived at. Here I have provided the videos showing the analysis and description provided in the previous section. 
 
 
-<details>
-<summary>CPX-EW Device</summary>
-<br>
+#### i. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-To monitor a CPX-EW (east-west) device, the exporter is added as a side-car. An example yaml file of a CPX-EW device with an exporter as a side car is given below;
-```
-apiVersion: extensions/v1beta1
-kind: DaemonSet
-metadata:
-  name: cpx-ew
-spec:
-  template:
-    metadata:
-      name: cpx-ew
-      labels:
-        app: cpx-ew
-      annotations:
-        NETSCALER_AS_APP: "True"
-    spec:
-      serviceAccountName: cpx
-      hostNetwork: true
-      containers:
-        - name: cpx
-          image: "in-docker-reg.eng.citrite.net/cpx-dev/cpx:12.1-48.118"
-          securityContext: 
-             privileged: true
-          env:
-          - name: "EULA"
-            value: "yes"
-          - name: "NS_NETMODE"
-            value: "HOST"
-          #- name: "kubernetes_url"
-          #  value: "https://10.106.xx.xx:6443"
-        # Add exporter as a sidecar
-        - name: exporter
-          image: "quay.io/citrix/netscaler-metrics-exporter:v1.0.0"
-          args:
-            - "--target-nsip=192.168.0.2:80"
-            - "--port=8888"
-          imagePullPolicy: IfNotPresent      
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: exporter-cpx-ew
-  labels:
-    service-type: citrix-adc-monitor
-spec:
-  selector:
-    app: cpx-ew
-  ports:
-    - name: exporter-port
-      port: 8888
-      targetPort: 8888
-```
-Here, the exporter uses the ```192.168.0.2``` local IP to fetch metrics from the CPX.
+** Performance on Track1 (Trained on Track1)**
 
-</details>
+** Performance on Track2 (Trained only on Track1)**
+
+
+** Observations and Intuitions:**
+* This model succeeded in navigating both track1 and track2 despite being trained only on track1. It was however slighlty shaky on track1 and highly oscillatory on track2. 
+* The network was able to learn about the left and right road margins and navigated sufficiently well to stay within their bounds. 
+* Thus, on track2 it was able to stay on the road by merely identifying the road boundaries/edges. To ensure that the car stayed on one side of the road on track2, the network will need to be trained on track2 as well such that it is shown how to stay on one side of the road. This would require quite a lot of tweaking, retraining and possibly may not be do-able with just a multi-layer neural network. A more complex archetecture like a CNN might need to be used.
+
+#### i. Network 2 [ Multi-Layer NN -- Succeeded ]
+
+** Performance on Track1 (Trained on Track1)**
+
+
+** Observations and Intuitions:**
+>>>>>>> EDIT AS NEEDED:::
+* This model succeeded in navigating both track1 and track2 despite being trained only on track1. It was however slighlty shaky on track1 and highly oscillatory on track2. 
+* The network was able to learn about the left and right road margins and navigated sufficiently well to stay within their bounds. 
+* Thus, on track2 it was able to stay on the road by merely identifying the road boundaries/edges. To ensure that the car stayed on one side of the road on track2, the network will need to be trained on track2 as well such that it is shown how to stay on one side of the road. This would require quite a lot of tweaking, retraining and possibly may not be do-able with just a multi-layer neural network. A more complex archetecture like a CNN might need to be used.
 
 
 
-Service Monitors to Detect Netscalers
----
-The netscaler metrics exporters helps collect data from the VPX/CPX ingress and CPX-EW devices. These exporters needs to be detected by Prometheus Operator so that the metrics can be timestamped, stored, and exposed for visualization on Grafana. Prometheus Operator uses the concept of ```ServiceMonitors``` to detect pods belonging to a service, using the labels attached to that service. 
-
-The following example yaml file will detect all the exporter services (given in the example yaml files above) which have the label ```service-type: citrix-adc-monitor``` associated with them. 
-
-```
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: citrix-adc-servicemonitor
-  labels:
-    servicemonitor: citrix-adc
-spec:
-  endpoints:
-  - interval: 30s
-    port: exporter-port
-  selector:
-    matchLabels:
-      service-type: citrix-adc-monitor
-  namespaceSelector:
-    matchNames:
-    - monitoring
-    - default
-```
-
-
-Visualization of Metrics
----
-The NetScaler instances which were detected for monitoring will appear in the ```Targets``` page of the prometheus container. It canbe accessed using ```http://<k8s_cluster_ip>:<prometheus_nodeport>/targets``` and will look similar to the screenshot below
-
-
-![image](https://user-images.githubusercontent.com/39149385/49031498-1ace0100-f1d0-11e8-90c1-c4d0589819cc.png)
-
-To view the metrics graphically,
-1. Log into grafana using ```http://<k8s_cluster_ip>:<grafafa_nodeport>``` with default credentials ```admin:admin```
-
-2. Import the [sample grafana dashboard](https://github.com/citrix/netscaler-metrics-exporter/blob/master/sample_grafana_dashboard.json) by selecting the ```+``` icon on the left panel and clicking import.
-
-<img src="https://user-images.githubusercontent.com/39149385/47292375-5e0ee000-d624-11e8-9410-77d46417e358.png" width="200">
-
-
-3. A dashboard containing graphs similar to the following should appear
-
-![image](https://user-images.githubusercontent.com/39149385/49060067-f30f8500-f231-11e8-8c94-4be78fa6948a.png)
-
-4. The dashboard can be further enhanced using Grafana's [documentation](http://docs.grafana.org/) or demo [videos](https://www.youtube.com/watch?v=mgcJPREl3CU).
+https://github.com/etianen/html5media/wiki/embedding-video
+https://github.com/etianen/html5media/wiki/embedding-video
+https://github.com/etianen/html5media/wiki/embedding-video
 
 
 
+### Video:
+
+<video src="tmp_net_Multi_track2.mp4" poster="placeholder_small.png" width="320" height="160" controls preload></video>
