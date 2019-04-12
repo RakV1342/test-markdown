@@ -30,19 +30,17 @@ Data Collection
 The First step would be to collect good training data. For the purpose of this project the data is camera images taken along the length of the track using the camera within the car. There were two ways in which I drove the car while collecting data:
 
 * One was the straightforward and ideal scenario, wherein I ensured the car was centered on the road and maintained a good steering angle throughout the track
-* The second was that of corrective drining. Here I would position the car such that it was severely off-centered on the road. From this edge/side position I would press the record button and recenter the car. 
+* The second was that of corrective drining. Here I would position the car such that it was severely off-centered on the road. From this edge/side position I would press the record button and recenter the car. A camera image taken from the car when it was highly offcentered on purpose is given below:
+
+
+![alt text][image7] 
+
 
 Steering angles associated with each image were already in the normalized range of [-1, +1].
 
 Image of the csv file holding the camera image locations and the corresponding steering angle is provided below:
 
 ![alt text][image1]
-
-
-A camera image taken from the car when it was highly offcentered on purpose is given below:
-
-![alt text][image7] 
-
 
 #### ii. Right and Left Camera Angles
 
