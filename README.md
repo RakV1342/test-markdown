@@ -169,9 +169,13 @@ The previous section discussed how the model was trained, tested and finally arr
 
 #### i. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-**Track1 (Trained on Track1):** Video available at: ```./videos/MultiNN_track1.mp4```
+**Track1 (Trained on Track1)** 
 
-**Track2 (Trained only on Track1):** Video available at: ```./videos/MultiNN_track2.mp4```
+Video available at: ```./videos/MultiNN_track1.mp4```
+
+**Track2 (Trained only on Track1)** 
+
+Video available at: ```./videos/MultiNN_track2.mp4```
 
 
 **Observations and Intuitions:**
@@ -179,9 +183,11 @@ The previous section discussed how the model was trained, tested and finally arr
 * The network was able to learn about the left and right road margins and navigated sufficiently well to stay within their bounds. 
 * Thus, on track2 it was able to stay on the road by merely identifying the road boundaries/edges. To ensure that the car stayed on one side of the road on track2, the network will need to be trained on track2 as well such that it is shown how to stay on one side of the road. This would require quite a lot of tweaking, retraining and possibly may not be do-able with just a multi-layer neural network. A more complex archetecture like a CNN might need to be used.
 
-#### i. Network 2 [ Multi-Layer NN -- Succeeded ]
+#### ii. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-**Track1 (Trained on Track1):** Video available at: ```./videos/.CNN_track1.mp4```
+**Track1 (Trained on Track1)** 
+
+Video available at: ```./videos/.CNN_track1.mp4```
 
 
 **Observations and Intuitions:**
