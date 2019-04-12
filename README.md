@@ -41,7 +41,7 @@ Image of the csv file holding the camera image locations and the corresponding s
 For each of the images captured from within the car, there were two other camera angles that were recorded. One that was placed slightly to the right and the other that was positioned slightly to the left. Taking such images helped in two ways - They helped provide driving data for the car in the case it was slightly off centered and also helped provide a more generalized dataset. Thus, based on the former reasoning, it helped the car recenter itself when offset slightly from the center, and by the latter reasoning it ensured lesser chances of overfitting.
 
 The left, center and right camera angles for the same point in the track are shown below:
-![alt text][imager2] ![alt text][image3] ![alt text][image4] 
+![alt text][image2] ![alt text][image3] ![alt text][image4] 
 
 
 #### iii. Augmented Images
@@ -168,7 +168,7 @@ Video available at: ```./videos/MultiNN_track1.mp4```
 Video available at: ```./videos/MultiNN_track2.mp4```
 
 
-** Observations and Intuitions:**
+**Observations and Intuitions:**
 * This model succeeded in navigating both track1 and track2 despite being trained only on track1. It was however slighlty shaky on track1 and highly oscillatory on track2. 
 * The network was able to learn about the left and right road margins and navigated sufficiently well to stay within their bounds. 
 * Thus, on track2 it was able to stay on the road by merely identifying the road boundaries/edges. To ensure that the car stayed on one side of the road on track2, the network will need to be trained on track2 as well such that it is shown how to stay on one side of the road. This would require quite a lot of tweaking, retraining and possibly may not be do-able with just a multi-layer neural network. A more complex archetecture like a CNN might need to be used.
