@@ -161,11 +161,9 @@ The previous section discussed how the model was trained, tested and finally arr
 
 #### i. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-**Performance on Track1 (Trained on Track1)**
-Video available at: ```./videos/MultiNN_track1.mp4```
+**Track1 (Trained on Track1):** Video available at: ```./videos/MultiNN_track1.mp4```
 
-**Performance on Track2 (Trained only on Track1)**
-Video available at: ```./videos/MultiNN_track2.mp4```
+**Track2 (Trained only on Track1):** Video available at: ```./videos/MultiNN_track2.mp4```
 
 
 **Observations and Intuitions:**
@@ -175,11 +173,10 @@ Video available at: ```./videos/MultiNN_track2.mp4```
 
 #### i. Network 2 [ Multi-Layer NN -- Succeeded ]
 
-**Performance on Track1 (Trained on Track1)**
-Video available at: ```./videos/.CNN_track1.mp4```
+**Track1 (Trained on Track1):** Video available at: ```./videos/.CNN_track1.mp4```
 
 
-** Observations and Intuitions:**
+**Observations and Intuitions:**
 * This model succeeded in navigating track1 in a very smooth manner.
 * To make it work well with track2, it will need to be fed data from track2 as well.
 
