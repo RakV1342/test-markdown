@@ -131,7 +131,7 @@ The goal of implementing this network was to get the car to behave more smoothly
 * Size of Fully Connected Layers
 
 
-The entire augemnted dataset (Original Center images + Reflected Center Inages + Left/Right Images with Steering Bias + Reflected Left/Right Images + Corrective dataset of images[which itself had left/center/right images and their reflections]) was used to train this network. Finally, after a lot of testing and tweaking, I was able to train a satisfactory network with the following architecture:
+The entire augemnted dataset (```Original Center images``` + ```Reflected Center Inages``` + ```Left/Right Images with Steering Bias``` + ```Reflected Left/Right Images``` + ```Corrective dataset of images [which itself had left/center/right images and their reflections]```) was used to train this network. Finally, after a lot of testing and tweaking, I was able to train a satisfactory network with the following architecture:
 
 ```
 # CNN
