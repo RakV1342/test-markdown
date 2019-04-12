@@ -17,6 +17,9 @@ The broad steps of this project are:
 [image4]: ./images/camera_angles_right.jpg "Camera Right"
 [image5]: ./images/crop_orig.jpg "Original Image"
 [image6]: ./images/crop_cropped.jpg "Cropped Image"
+[image7]: ./images/correction_center.jpg "Correction"
+[image8]: ./images/unreflected.jpg "Unreflected"
+[image9]: ./images/reflected.jpg "Reflected"
 
 
 Data Collection
@@ -27,7 +30,10 @@ Data Collection
 The First step would be to collect good training data. For the purpose of this project the data is camera images taken along the length of the track using the camera within the car. There were two ways in which I drove the car while collecting data:
 
 * One was the straightforward and ideal scenario, wherein I ensured the car was centered on the road and maintained a good steering angle throughout the track
-* The second was that of corrective drining. Here I would position the car such that it was severely off-centered on the road. From this edge/side position I would press the record button and recenter the car. 
+* The second was that of corrective drining. Here I would position the car such that it was severely off-centered on the road. From this edge/side position I would press the record button and recenter the car. A camera image taken from the car when it was highly offcentered on purpose is given below:
+![alt text][image7] 
+
+
 
 Steering angles associated with each image were already in the normalized range of [-1, +1].
 
@@ -47,6 +53,8 @@ The left, center and right camera angles for the same point in the track are sho
 #### iii. Augmented Images
 
 The track mainly consisted of left turns and only one major right turn existed. To ensure the model generalizes well, all the images that were collected were reflected and augmented to the original dataset. The steering angle associated with such reflected images was the negated value of the original value.
+![alt text][image8] ![alt text][image9] 
+
 
 
 Network Design and Training
@@ -104,7 +112,6 @@ This network was trained for ```10 EPOCHS``` again, and it performed quite well.
 
 
 To improve it, I included the augmented dataset of left and right camera images. To each of these images I added a steering bias, such that the car would be taught to turn slightly more to the right for images taken from the left camera and vice-versa. Inclusion of this set helped the car navigate all the way till the bridge!
-
 
 The next change I made to the model was altering the number of EPOCHS and turning bias. Now I used ```2``` EPOCHS and used a small steering bias. I also changed the batch size to ```64```. To my surprise, this ensured the car navigated the entire path. It was even able to navigate the entire path within Track2 without driving off or falling off the road despite being trained only on track1!
 
