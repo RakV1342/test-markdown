@@ -34,14 +34,22 @@ Go to the ```pacman_incremental_search``` folder and run the following commands:
 
 ### A\* Commands
 ```
-pacman.py -l tinyMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
-pacman.py -l mediumMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
-pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+python pacman.py -l tinyMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+python pacman.py -l mediumMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+python pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
 ```
 
 ### D\* Commands
 ```
-pacman.py -l tinyMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
-pacman.py -l mediumMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
-pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+python pacman.py -l tinyMaze -z .5 -p SearchAgent -a fn=dlite,heuristic=manhattanHeuristic
+python pacman.py -l mediumMaze -z .5 -p SearchAgent -a fn=dlite,heuristic=manhattanHeuristic
+python pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=dlite,heuristic=manhattanHeuristic
 ```
+
+
+### Four Node D* Lite Commands
+```
+python FourNode.py
+```
+
+Once the program prompts for the location of the obstacle, please enter (in capital letters) any location except the current robot or goal location. Example, you may input: ```A or B or C or D```. For no obstacle, you may enter ```X```. Sample output for the code is provided in the report.
