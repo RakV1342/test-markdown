@@ -188,3 +188,7 @@ The previous section discussed how the model was trained, tested and finally arr
 * This model succeeded in navigating track1 in a very smooth manner.
 * To make it work well with track2, it will need to be fed data from track2 as well.
 
+
+<img src="./gifs/1__Generating training data.gif" height="40" width="40" />
+
+
