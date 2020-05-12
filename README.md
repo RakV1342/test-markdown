@@ -55,4 +55,4 @@ Once the program prompts for the location of the obstacle, please enter (in capi
 
 
 
-<img src="./gifs/1__Generating training data.gif" height="40" width="40" />
+<img src="./gifs/1__Generating training data.gif" height="400" width="400" />
